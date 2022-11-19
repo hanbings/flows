@@ -1,0 +1,86 @@
+task collect(type: Copy) {
+    destinationDir = file('build/libs')
+    subprojects.each { project ->
+        from project.file('build/libs')
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    group = 'io.hanbings.fluocean'
+    version = '1.0.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.24'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        // https://mvnrepository.com/artifact/org.jetbrains/annotations
+        compileOnly 'org.jetbrains:annotations:23.0.0'
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    compileJava {
+        options.encoding = 'UTF-8'
+    }
+
+    compileTestJava {
+        options.encoding = 'UTF-8'
+    }
+
+    javadoc {
+        options.addBooleanOption('html5', true)
+        options.encoding('utf-8')
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        archiveClassifier.convention('sources')
+        archiveClassifier.set('sources')
+    }
+
+    task javadocJar(type: Jar) {
+        from javadoc
+        archiveClassifier.convention('javadocs')
+        archiveClassifier.set('javadocs')
+    }
+
+    publishing {
+        repositories {
+            maven {
+                url = uri((project.findProperty("repository_root_url") ?: System.getenv("REPOSITORY_ROOT_URL"))
+                        + (project.version.toString().endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'))
+                credentials {
+                    username = project.findProperty("repository_user") ?: System.getenv("REPOSITORY_USER")
+                    password = project.findProperty("repository_token") ?: System.getenv("REPOSITORY_TOKEN")
+                }
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                artifact(jar)
+                artifact(sourcesJar)
+                artifact(javadocJar)
+            }
+        }
+    }
+}
