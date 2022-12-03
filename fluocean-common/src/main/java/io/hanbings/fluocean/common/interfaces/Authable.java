@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("SpellCheckingInspection")
-public interface Authable<R extends Requestable<P>, P extends Responsable> {
+public interface Authable<R extends Request, T, P extends Response<T>, S extends Enum<? extends Scope>> {
     String authorize();
-    String authorize(String state);
-    String authorize(List<Enum<? extends ScopeEnum>> scopes);
+
+    String authorize(List<S> scopes);
+
     String authorize(Map<String, String> params);
-    String authorize(String state, List<Enum<? extends ScopeEnum>> scopes, Map<String, String> params);
-    P token(String code);
-    P token(String url, boolean code);
+
+    String authorize(List<S> scopes, Map<String, String> params);
+
+    P token(String url);
+
+    P token(String code, boolean raw);
 }
