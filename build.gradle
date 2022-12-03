@@ -28,9 +28,6 @@ subprojects {
 
         // https://mvnrepository.com/artifact/org.jetbrains/annotations
         compileOnly 'org.jetbrains:annotations:23.0.0'
-
-        // common
-        implementation project(":fluocean-common")
     }
 
     java {

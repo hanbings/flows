@@ -5,7 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Map;
+
 public interface Request {
+    <T> Response<T> get(T type, Proxy proxy, String url);
+
+    <T> Response<T> get(T type, Proxy proxy, String url, Map<String, String> params);
+
+    <T> Response<T> post(T type, Proxy proxy, String url);
+
+    <T> Response<T> post(T type, Proxy proxy, String url, Map<String, String> form);
+
     @Setter
     @Getter
     @AllArgsConstructor

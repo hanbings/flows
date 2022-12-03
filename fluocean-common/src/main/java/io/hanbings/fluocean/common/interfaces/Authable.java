@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("SpellCheckingInspection")
-public interface Authable<R extends Request, T, P extends Response<T>, S extends Enum<? extends Scope>> {
+public interface Authable<R extends Request, T, P extends Response<T>, S extends Enum<?>> {
     String authorize();
 
     String authorize(List<S> scopes);
