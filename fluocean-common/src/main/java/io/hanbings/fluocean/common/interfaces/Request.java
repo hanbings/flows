@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.List;
 import java.util.Map;
 
 public interface Request {
@@ -16,14 +15,6 @@ public interface Request {
     <D, E> Response<D, E> post(D type, E error, Serialization serialization, Proxy proxy, String url);
 
     <D, E> Response<D, E> post(D type, E error, Serialization serialization, Proxy proxy, String url, Map<String, String> form);
-
-    interface Serialization {
-        <T> T object(Class<T> type, String raw);
-
-        Map<String, Object> map(String raw);
-
-        <T> List<T> list(Class<T> type, String raw);
-    }
 
     @Setter
     @Getter

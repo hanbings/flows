@@ -1,8 +1,6 @@
 package io.hanbings.fluocean.common;
 
-import io.hanbings.fluocean.common.interfaces.Authable;
-import io.hanbings.fluocean.common.interfaces.Request;
-import io.hanbings.fluocean.common.interfaces.Response;
+import io.hanbings.fluocean.common.interfaces.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -12,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 @Setter
@@ -28,7 +25,8 @@ public class OAuth<D, E> implements Authable<D, E> {
     String redirect;
 
     Consumer<Request.Proxy> proxy;
-    Supplier<Request.Serialization> serialization;
+    Serialization serialization;
+    State state;
     Request request;
 
     @Override

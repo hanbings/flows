@@ -2,6 +2,7 @@ package io.hanbings.fluocean.common;
 
 import io.hanbings.fluocean.common.interfaces.Request;
 import io.hanbings.fluocean.common.interfaces.Response;
+import io.hanbings.fluocean.common.interfaces.Serialization;
 
 import java.util.Map;
 
