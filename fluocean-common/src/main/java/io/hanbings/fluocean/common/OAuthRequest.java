@@ -8,22 +8,22 @@ import java.util.Map;
 public class OAuthRequest implements Request {
 
     @Override
-    public <T> Response<T> get(T type, Response.Serialization<T> serialization, Proxy proxy, String url) {
+    public <T, E> Response<T, E> get(T type, E error, Response.Serialization<T> serialization, Proxy proxy, String url) {
         return null;
     }
 
     @Override
-    public <T> Response<T> get(T type, Response.Serialization<T> serialization, Proxy proxy, String url, Map<String, String> params) {
+    public <T, E> Response<T, E> get(T type, E error, Response.Serialization<T> serialization, Proxy proxy, String url, Map<String, String> params) {
         return null;
     }
 
     @Override
-    public <T> Response<T> post(T type, Response.Serialization<T> serialization, Proxy proxy, String url) {
+    public <T, E> Response<T, E> post(T type, E error, Response.Serialization<T> serialization, Proxy proxy, String url) {
         return null;
     }
 
     @Override
-    public <T> Response<T> post(T type, Response.Serialization<T> serialization, Proxy proxy, String url, Map<String, String> form) {
+    public <T, E> Response<T, E> post(T type, E error, Response.Serialization<T> serialization, Proxy proxy, String url, Map<String, String> form) {
         return null;
     }
 }

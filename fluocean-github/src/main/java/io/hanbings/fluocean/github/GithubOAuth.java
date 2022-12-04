@@ -1,8 +1,9 @@
 package io.hanbings.fluocean.github;
 
 import io.hanbings.fluocean.common.OAuth;
+import io.hanbings.fluocean.common.OAuthAccess;
 
-public class GithubOAuth extends OAuth<GithubAccess> {
+public class GithubOAuth extends OAuth<OAuthAccess, OAuthAccess.Error> {
     private GithubOAuth() {
         super(
                 "https://github.com/login/oauth/authorize",

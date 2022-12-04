@@ -3,11 +3,11 @@ package io.hanbings.fluocean.common;
 import io.hanbings.fluocean.common.interfaces.Response;
 
 
-public class OAuthResponse<T> implements Response<T> {
+public class OAuthResponse<T, E> implements Response<T, E> {
     private OAuthResponse() {
     }
 
-    public OAuthResponse(Serialization<T> serialization, T data) {
+    public OAuthResponse(Serialization serialization, T data, E error) {
 
     }
 
@@ -17,6 +17,11 @@ public class OAuthResponse<T> implements Response<T> {
 
     @Override
     public T data() {
+        return null;
+    }
+
+    @Override
+    public E error() {
         return null;
     }
 

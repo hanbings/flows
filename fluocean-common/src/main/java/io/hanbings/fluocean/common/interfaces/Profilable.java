@@ -1,8 +1,8 @@
 package io.hanbings.fluocean.common.interfaces;
 
 @SuppressWarnings("SpellCheckingInspection")
-public interface Profilable<T> {
-    Response<T> profile();
+public interface Profilable<D, E> {
+    Response<D, E> profile();
 
-    Response<T> profile(String token);
+    Response<D, E> profile(String token);
 }

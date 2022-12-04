@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
-public class OAuth<T> implements Authable<T> {
+public class OAuth<D, E> implements Authable<D, E> {
     final String authorization;
     final String access;
     String client;
@@ -26,7 +26,7 @@ public class OAuth<T> implements Authable<T> {
     String redirect;
 
     Consumer<Request.Proxy> proxy;
-    Supplier<Response.Serialization<T>> serialization;
+    Supplier<Response.Serialization> serialization;
     Request request;
 
     @Override
@@ -50,12 +50,12 @@ public class OAuth<T> implements Authable<T> {
     }
 
     @Override
-    public Response<T> token(String url) {
+    public Response<D, E> token(String url) {
         return null;
     }
 
     @Override
-    public Response<T> token(String code, boolean raw) {
+    public Response<D, E> token(String code, boolean raw) {
         return null;
     }
 }
