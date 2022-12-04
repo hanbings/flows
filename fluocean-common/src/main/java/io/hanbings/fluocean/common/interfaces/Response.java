@@ -1,18 +1,18 @@
 package io.hanbings.fluocean.common.interfaces;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import java.util.List;
+import java.util.Map;
 
 public interface Response<T> {
     T data();
 
     boolean success();
 
-    class Serialization<T> {
-        static Gson serializer = new Gson();
+    interface Serialization<T> {
+        T serialize(String raw);
 
-        T serialization(String raw, Class<T> type) {
-            return serializer.fromJson(raw, TypeToken.get(type));
-        }
+        Map<String, Object> map(String raw);
+
+        <E> List<E> list(String raw, Class<E> clazz);
     }
 }

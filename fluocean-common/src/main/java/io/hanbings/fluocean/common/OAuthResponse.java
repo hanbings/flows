@@ -4,7 +4,16 @@ import io.hanbings.fluocean.common.interfaces.Response;
 
 
 public class OAuthResponse<T> implements Response<T> {
-    Serialization<T> serialization = new Response.Serialization<>();
+    private OAuthResponse() {
+    }
+
+    public OAuthResponse(Serialization<T> serialization, T data) {
+
+    }
+
+    public OAuthResponse(Throwable throwable) {
+
+    }
 
     @Override
     public T data() {
