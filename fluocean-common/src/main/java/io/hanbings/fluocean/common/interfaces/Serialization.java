@@ -6,7 +6,7 @@ import java.util.Map;
 public interface Serialization {
     <T> T object(Class<T> type, String raw);
 
-    Map<String, Object> map(String raw);
+    <K, V> Map<K, V> map(Class<K> key, Class<V> value, String raw);
 
     <T> List<T> list(Class<T> type, String raw);
 }

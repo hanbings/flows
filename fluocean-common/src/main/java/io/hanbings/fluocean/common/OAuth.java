@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -24,10 +25,10 @@ public class OAuth<D, E> implements Authable<D, E> {
     String secret;
     String redirect;
 
-    Consumer<Request.Proxy> proxy;
-    Serialization serialization;
-    State state;
-    Request request;
+    Consumer<Request.Proxy> proxy = null;
+    Serialization serialization = new OAuthSerialization();
+    State state = new OAuthState(300, () -> UUID.randomUUID().toString());
+    Request request = new OAuthRequest();
 
     @Override
     public String authorize() {
@@ -49,6 +50,7 @@ public class OAuth<D, E> implements Authable<D, E> {
         Map<String, String> temp = new HashMap<>() {{
             put("client_id", client);
             put("redirect_uri", redirect);
+            put("state", state.add());
 
             // put scopes
             StringBuilder scope = new StringBuilder();
