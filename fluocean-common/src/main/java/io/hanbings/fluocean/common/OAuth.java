@@ -1,5 +1,6 @@
 package io.hanbings.fluocean.common;
 
+import io.hanbings.fluocean.common.function.Lazy;
 import io.hanbings.fluocean.common.interfaces.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 @Setter
@@ -18,17 +19,17 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
-public class OAuth<D, E> implements Authable<D, E> {
+public class OAuth<T, D, E> implements Authable<T, D, E> {
     final String authorization;
     final String access;
     String client;
     String secret;
     String redirect;
 
-    Consumer<Request.Proxy> proxy = null;
-    Serialization serialization = new OAuthSerialization();
-    State state = new OAuthState(300, () -> UUID.randomUUID().toString());
-    Request request = new OAuthRequest();
+    Supplier<Request.Proxy> proxy = null;
+    Lazy<Request> request = Lazy.of(() -> proxy == null ? new OAuthRequest() : new OAuthRequest(proxy.get()));
+    Lazy<Serialization> serialization = Lazy.of(OAuthSerialization::new);
+    Lazy<State> state = Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()));
 
     @Override
     public String authorize() {
@@ -50,7 +51,7 @@ public class OAuth<D, E> implements Authable<D, E> {
         Map<String, String> temp = new HashMap<>() {{
             put("client_id", client);
             put("redirect_uri", redirect);
-            put("state", state.add());
+            put("state", state.get().add());
 
             // put scopes
             StringBuilder scope = new StringBuilder();
@@ -90,12 +91,12 @@ public class OAuth<D, E> implements Authable<D, E> {
     }
 
     @Override
-    public Response<D, E> token(String url) {
+    public Response<T, D, E> token(String url) {
         return null;
     }
 
     @Override
-    public Response<D, E> token(String code, boolean raw) {
+    public Response<T, D, E> token(String code, boolean raw) {
         return null;
     }
 }

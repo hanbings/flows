@@ -2,20 +2,20 @@ package io.hanbings.fluocean.common.interfaces;
 
 import java.util.function.Consumer;
 
-public interface Response<D, E> {
+public interface Response<T, D, E> {
     D data();
 
     E error();
 
-    String token();
+    T token();
 
     Throwable throwable();
 
-    Response<D, E> succeed(Consumer<D> data);
+    Response<T, D, E> succeed(Consumer<D> data);
 
-    Response<D, E> fail(Consumer<E> error);
+    Response<T, D, E> fail(Consumer<E> error);
 
-    Response<D, E> except(Consumer<Throwable> throwable);
+    Response<T, D, E> except(Consumer<Throwable> throwable);
 
     boolean success();
 }

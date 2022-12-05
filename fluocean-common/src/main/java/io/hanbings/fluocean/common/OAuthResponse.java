@@ -10,7 +10,7 @@ public class OAuthResponse {
     private OAuthResponse() {
     }
 
-    <D, E> Response<D, E> response(@NotNull String token, @Nullable D data, @Nullable E error) {
+    <T, D, E> Response<T, D, E> response(@NotNull T token, @Nullable D data, @Nullable E error) {
         return (data == null && error == null) ?
                 new OAuthResponse.Exception<>(token, new IllegalArgumentException()) :
                 ((error == null) ?
@@ -19,11 +19,11 @@ public class OAuthResponse {
                 );
     }
 
-    <D, E> Response<D, E> response(String token, Throwable throwable) {
+    <T, D, E> Response<T, D, E> response(T token, Throwable throwable) {
         return new OAuthResponse.Exception<>(token, throwable);
     }
 
-    record Success<D, E>(String token, D data) implements Response<D, E> {
+    record Success<T, D, E>(T token, D data) implements Response<T, D, E> {
 
         @Override
         public E error() {
@@ -36,19 +36,19 @@ public class OAuthResponse {
         }
 
         @Override
-        public Response<D, E> succeed(Consumer<D> data) {
+        public Response<T, D, E> succeed(Consumer<D> data) {
             data.accept(this.data);
 
             return this;
         }
 
         @Override
-        public Response<D, E> fail(Consumer<E> error) {
+        public Response<T, D, E> fail(Consumer<E> error) {
             return this;
         }
 
         @Override
-        public Response<D, E> except(Consumer<Throwable> exception) {
+        public Response<T, D, E> except(Consumer<Throwable> exception) {
             return this;
         }
 
@@ -58,7 +58,7 @@ public class OAuthResponse {
         }
     }
 
-    record Failure<D, E>(String token, E error) implements Response<D, E> {
+    record Failure<T, D, E>(T token, E error) implements Response<T, D, E> {
         @Override
         public D data() {
             return null;
@@ -70,19 +70,19 @@ public class OAuthResponse {
         }
 
         @Override
-        public Response<D, E> succeed(Consumer<D> data) {
+        public Response<T, D, E> succeed(Consumer<D> data) {
             return this;
         }
 
         @Override
-        public Response<D, E> fail(Consumer<E> error) {
+        public Response<T, D, E> fail(Consumer<E> error) {
             error.accept(this.error);
 
             return this;
         }
 
         @Override
-        public Response<D, E> except(Consumer<Throwable> exception) {
+        public Response<T, D, E> except(Consumer<Throwable> exception) {
             return this;
         }
 
@@ -92,7 +92,7 @@ public class OAuthResponse {
         }
     }
 
-    record Exception<D, E>(String token, Throwable throwable) implements Response<D, E> {
+    record Exception<T, D, E>(T token, Throwable throwable) implements Response<T, D, E> {
         @Override
         public D data() {
             return null;
@@ -104,17 +104,17 @@ public class OAuthResponse {
         }
 
         @Override
-        public Response<D, E> succeed(Consumer<D> data) {
+        public Response<T, D, E> succeed(Consumer<D> data) {
             return this;
         }
 
         @Override
-        public Response<D, E> fail(Consumer<E> error) {
+        public Response<T, D, E> fail(Consumer<E> error) {
             return this;
         }
 
         @Override
-        public Response<D, E> except(Consumer<Throwable> throwable) {
+        public Response<T, D, E> except(Consumer<Throwable> throwable) {
             throwable.accept(this.throwable);
 
             return this;
