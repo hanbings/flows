@@ -75,26 +75,26 @@ public class OAuthRequest implements Request {
     }
 
     @Override
-    public <T, D, E> Response<T, D, E> get(D type, E error, Serialization serialization,
-                                           @Nullable Proxy proxy, String url) {
+    public <D, E> Response<D, E> get(D type, E error, Serialization serialization,
+                                     @Nullable Proxy proxy, String url) {
         return null;
     }
 
     @Override
-    public <T, D, E> Response<T, D, E> get(D type, E error, Serialization serialization,
-                                           @Nullable Proxy proxy, String url, Map<String, String> params) {
+    public <D, E> Response<D, E> get(D type, E error, Serialization serialization,
+                                     @Nullable Proxy proxy, String url, Map<String, String> params) {
         return null;
     }
 
     @Override
-    public <T, D, E> Response<T, D, E> post(D type, E error, Serialization serialization,
-                                            @Nullable Proxy proxy, String url) {
+    public <D, E> Response<D, E> post(D type, E error, Serialization serialization,
+                                      @Nullable Proxy proxy, String url) {
         return null;
     }
 
     @Override
-    public <T, D, E> Response<T, D, E> post(D type, E error, Serialization serialization,
-                                            @Nullable Proxy proxy, String url, Map<String, String> form) {
+    public <D, E> Response<D, E> post(D type, E error, Serialization serialization,
+                                      @Nullable Proxy proxy, String url, Map<String, String> form) {
         return null;
     }
 

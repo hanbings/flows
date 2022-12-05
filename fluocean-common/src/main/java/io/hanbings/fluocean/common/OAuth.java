@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
-public class OAuth<T, D, E> implements Authable<T, D, E> {
+public class OAuth<D, E> implements Authable<D, E> {
     final String authorization;
     final String access;
     String client;
@@ -39,12 +39,12 @@ public class OAuth<T, D, E> implements Authable<T, D, E> {
 
     @Override
     public String authorize(List<Enum<?>> scopes) {
-        return authorize(List.of(), Map.of());
+        return authorize(scopes, Map.of());
     }
 
     @Override
     public String authorize(Map<String, String> params) {
-        return null;
+        return authorize(List.of(), params);
     }
 
     @Override
@@ -92,12 +92,12 @@ public class OAuth<T, D, E> implements Authable<T, D, E> {
     }
 
     @Override
-    public Response<T, D, E> token(String url) {
-        return null;
+    public Response<D, E> token(String url) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public Response<T, D, E> token(String code, boolean raw) {
-        return null;
+    public Response<D, E> token(String code, boolean raw) {
+        throw new UnsupportedOperationException();
     }
 }
