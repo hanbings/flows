@@ -22,8 +22,9 @@ public interface Request {
     @SuppressWarnings("unused")
     @Accessors(fluent = true, chain = true)
     class Proxy {
+        java.net.Proxy.Type type;
         String host;
-        String port;
+        int port;
         String username;
         String password;
     }

@@ -27,7 +27,8 @@ public class OAuth<T, D, E> implements Authable<T, D, E> {
     String redirect;
 
     Supplier<Request.Proxy> proxy = null;
-    Lazy<Request> request = Lazy.of(() -> proxy == null ? new OAuthRequest() : new OAuthRequest(proxy.get()));
+    Lazy<Request> request = Lazy.of(
+            () -> proxy == null ? new OAuthRequest() : new OAuthRequest(3000, proxy.get()));
     Lazy<Serialization> serialization = Lazy.of(OAuthSerialization::new);
     Lazy<State> state = Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()));
 
