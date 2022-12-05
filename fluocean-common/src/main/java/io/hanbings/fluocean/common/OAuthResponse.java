@@ -1,7 +1,6 @@
 package io.hanbings.fluocean.common;
 
 import io.hanbings.fluocean.common.interfaces.Response;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -10,7 +9,7 @@ public class OAuthResponse {
     private OAuthResponse() {
     }
 
-    static <D, E> Response<D, E> response(@NotNull String token, @Nullable D data, @Nullable E error) {
+    static <D, E> Response<D, E> response(String token, @Nullable D data, @Nullable E error) {
         return (data == null && error == null) ?
                 new OAuthResponse.Exception<>(token, new IllegalArgumentException()) :
                 ((error == null) ?
@@ -19,7 +18,7 @@ public class OAuthResponse {
                 );
     }
 
-    static <D, E> Response<D, E> response(String token, Throwable throwable) {
+    static <D, E> Response<D, E> exception(String token, Throwable throwable) {
         return new OAuthResponse.Exception<>(token, throwable);
     }
 

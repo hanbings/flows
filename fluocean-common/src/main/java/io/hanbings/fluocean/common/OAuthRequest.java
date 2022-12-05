@@ -3,6 +3,7 @@ package io.hanbings.fluocean.common;
 import io.hanbings.fluocean.common.interfaces.Request;
 import io.hanbings.fluocean.common.interfaces.Response;
 import io.hanbings.fluocean.common.interfaces.Serialization;
+import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class OAuthRequest implements Request {
@@ -77,7 +79,26 @@ public class OAuthRequest implements Request {
     @Override
     public <D, E> Response<D, E> get(D type, E error, Serialization serialization,
                                      @Nullable Proxy proxy, String url) {
-        return null;
+        okhttp3.Request request = new okhttp3.Request.Builder().url(url).get().build()
+        Call call = client.newCall(request);
+
+        try (okhttp3.Response response = call.execute()) {
+            if (response.code() != 200) {
+
+            } else {
+                return OAuthResponse.response(
+                        null,
+                        null,
+                        serialization.object(
+                                error.getClass(),
+                                Objects.requireNonNull(response.body()).string()
+                        )
+                );
+            }
+
+        } catch (IOException e) {
+            return OAuthResponse.exception(null, e);
+        }
     }
 
     @Override
