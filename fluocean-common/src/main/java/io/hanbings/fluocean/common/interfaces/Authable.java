@@ -13,7 +13,7 @@ public interface Authable<D, E> {
 
     String authorize(List<Enum<?>> scopes, Map<String, String> params);
 
-    Response<D, E> token(String url);
+    Callback<D, E> token(String url);
 
-    Response<D, E> token(String code, boolean raw);
+    Callback<D, E> token(String code, boolean raw);
 }

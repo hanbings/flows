@@ -2,7 +2,7 @@ package io.hanbings.fluocean.common.interfaces;
 
 @SuppressWarnings("SpellCheckingInspection")
 public interface Profilable<D, E> {
-    Response<D, E> profile();
+    Callback<D, E> profile();
 
-    Response<D, E> profile(String token);
+    Callback<D, E> profile(String token);
 }

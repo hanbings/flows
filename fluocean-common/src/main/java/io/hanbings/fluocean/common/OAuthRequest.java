@@ -3,9 +3,7 @@ package io.hanbings.fluocean.common;
 import io.hanbings.fluocean.common.interfaces.Request;
 import io.hanbings.fluocean.common.interfaces.Response;
 import io.hanbings.fluocean.common.interfaces.Serialization;
-import okhttp3.Call;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +17,8 @@ import java.net.PasswordAuthentication;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -61,8 +61,11 @@ public class OAuthRequest implements Request {
     }
 
     public OAuthRequest(long timeout, Proxy proxy) {
+        client = client(timeout, proxy);
+    }
 
-        client = new OkHttpClient.Builder()
+    static OkHttpClient client(long timeout, Proxy proxy) {
+        return new OkHttpClient.Builder()
                 .sslSocketFactory(
                         new OAuthSSLSocketFactory(proxy, NOP_TLS_V12_SSL_CONTEXT.getSocketFactory()),
                         NOP_TRUST_MANAGER
@@ -77,46 +80,119 @@ public class OAuthRequest implements Request {
     }
 
     @Override
-    public <D, E> Response<D, E> get(D type, E error, Serialization serialization,
-                                     @Nullable Proxy proxy, String url) {
-        okhttp3.Request request = new okhttp3.Request.Builder().url(url).get().build()
-        Call call = client.newCall(request);
+    public Response get(Serialization serialization,
+                        @Nullable Proxy proxy, String url) {
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {
-            if (response.code() != 200) {
-
-            } else {
-                return OAuthResponse.response(
-                        null,
-                        null,
-                        serialization.object(
-                                error.getClass(),
-                                Objects.requireNonNull(response.body()).string()
-                        )
-                );
-            }
-
+            return new OAuthResponse(
+                    false,
+                    null,
+                    response.code(),
+                    Objects.requireNonNull(response.body()).string(),
+                    serialization.map(
+                            String.class,
+                            String.class,
+                            Objects.requireNonNull(response.body()).string()
+                    )
+            );
         } catch (IOException e) {
-            return OAuthResponse.exception(null, e);
+            return new OAuthResponse(true, e, 0, null, null);
         }
     }
 
     @Override
-    public <D, E> Response<D, E> get(D type, E error, Serialization serialization,
-                                     @Nullable Proxy proxy, String url, Map<String, String> params) {
-        return null;
+    public Response get(Serialization serialization,
+                        @Nullable Proxy proxy, String url, Map<String, String> params) {
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
+
+        try (okhttp3.Response response = call.execute()) {
+            return new OAuthResponse(
+                    false,
+                    null,
+                    response.code(),
+                    Objects.requireNonNull(response.body()).string(),
+                    serialization.map(
+                            String.class,
+                            String.class,
+                            Objects.requireNonNull(response.body()).string()
+                    )
+            );
+        } catch (IOException e) {
+            return new OAuthResponse(true, e, 0, null, null);
+        }
     }
 
     @Override
-    public <D, E> Response<D, E> post(D type, E error, Serialization serialization,
-                                      @Nullable Proxy proxy, String url) {
-        return null;
+    public Response post(Serialization serialization,
+                         @Nullable Proxy proxy, String url) {
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(new FormBody(List.of(), List.of()))
+                .build();
+
+        Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
+
+        try (okhttp3.Response response = call.execute()) {
+            return new OAuthResponse(
+                    false,
+                    null,
+                    response.code(),
+                    Objects.requireNonNull(response.body()).string(),
+                    serialization.map(
+                            String.class,
+                            String.class,
+                            Objects.requireNonNull(response.body()).string()
+                    )
+            );
+        } catch (IOException e) {
+            return new OAuthResponse(true, e, 0, null, null);
+        }
     }
 
     @Override
-    public <D, E> Response<D, E> post(D type, E error, Serialization serialization,
-                                      @Nullable Proxy proxy, String url, Map<String, String> form) {
-        return null;
+    public Response post(Serialization serialization,
+                         @Nullable Proxy proxy, String url, Map<String, String> form) {
+        List<String> keys = new ArrayList<>();
+        List<String> values = new ArrayList<>();
+
+        form.forEach((k, v) -> {
+            keys.add(k);
+            values.add(v);
+        });
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(new FormBody(keys, values))
+                .build();
+
+        Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
+
+        try (okhttp3.Response response = call.execute()) {
+            return new OAuthResponse(
+                    false,
+                    null,
+                    response.code(),
+                    Objects.requireNonNull(response.body()).string(),
+                    serialization.map(
+                            String.class,
+                            String.class,
+                            Objects.requireNonNull(response.body()).string()
+                    )
+            );
+        } catch (IOException e) {
+            return new OAuthResponse(true, e, 0, null, null);
+        }
     }
 
     record OkHttpProxyInterceptor(Proxy proxy) implements Interceptor {

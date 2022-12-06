@@ -92,12 +92,12 @@ public class OAuth<D, E> implements Authable<D, E> {
     }
 
     @Override
-    public Response<D, E> token(String url) {
+    public Callback<D, E> token(String url) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Response<D, E> token(String code, boolean raw) {
+    public Callback<D, E> token(String code, boolean raw) {
         throw new UnsupportedOperationException();
     }
 }

@@ -1,21 +1,15 @@
 package io.hanbings.fluocean.common.interfaces;
 
-import java.util.function.Consumer;
+import java.util.Map;
 
-public interface Response<D, E> {
-    D data();
-
-    E error();
-
-    String token();
+public interface Response {
+    boolean exception();
 
     Throwable throwable();
 
-    Response<D, E> succeed(Consumer<D> data);
+    int code();
 
-    Response<D, E> fail(Consumer<E> error);
+    String raw();
 
-    Response<D, E> except(Consumer<Throwable> throwable);
-
-    boolean success();
+    Map<String, String> data();
 }

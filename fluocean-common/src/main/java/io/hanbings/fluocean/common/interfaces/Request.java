@@ -8,13 +8,13 @@ import lombok.experimental.Accessors;
 import java.util.Map;
 
 public interface Request {
-    <D, E> Response<D, E> get(D type, E error, Serialization serialization, Proxy proxy, String url);
+    Response get(Serialization serialization, Proxy proxy, String url);
 
-    <D, E> Response<D, E> get(D type, E error, Serialization serialization, Proxy proxy, String url, Map<String, String> params);
+    Response get(Serialization serialization, Proxy proxy, String url, Map<String, String> params);
 
-    <D, E> Response<D, E> post(D type, E error, Serialization serialization, Proxy proxy, String url);
+    Response post(Serialization serialization, Proxy proxy, String url);
 
-    <D, E> Response<D, E> post(D type, E error, Serialization serialization, Proxy proxy, String url, Map<String, String> form);
+    Response post(Serialization serialization, Proxy proxy, String url, Map<String, String> form);
 
     @Setter
     @Getter
