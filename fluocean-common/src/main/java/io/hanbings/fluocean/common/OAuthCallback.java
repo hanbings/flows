@@ -9,7 +9,7 @@ public class OAuthCallback {
     private OAuthCallback() {
     }
 
-    static <D, E> Callback<D, E> response(String token, @Nullable D data, @Nullable E error) {
+    public static <D, E> Callback<D, E> response(String token, @Nullable D data, @Nullable E error) {
         return (data == null && error == null) ?
                 new OAuthCallback.Exception<>(token, new IllegalArgumentException()) :
                 ((error == null) ?
@@ -18,7 +18,7 @@ public class OAuthCallback {
                 );
     }
 
-    static <D, E> Callback<D, E> exception(String token, Throwable throwable) {
+    public static <D, E> Callback<D, E> exception(String token, Throwable throwable) {
         return new OAuthCallback.Exception<>(token, throwable);
     }
 

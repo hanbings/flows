@@ -3,7 +3,10 @@ package io.hanbings.fluocean.common;
 import io.hanbings.fluocean.common.interfaces.Request;
 import io.hanbings.fluocean.common.interfaces.Response;
 import io.hanbings.fluocean.common.interfaces.Serialization;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,20 +88,23 @@ public class OAuthRequest implements Request {
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .get()
+                .addHeader("Accept", "application/json")
                 .build();
 
         Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {
+            String content = Objects.requireNonNull(response.body()).string();
+
             return new OAuthResponse(
                     false,
                     null,
                     response.code(),
-                    Objects.requireNonNull(response.body()).string(),
+                    content,
                     serialization.map(
                             String.class,
                             String.class,
-                            Objects.requireNonNull(response.body()).string()
+                            content
                     )
             );
         } catch (IOException e) {
@@ -112,20 +118,23 @@ public class OAuthRequest implements Request {
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .get()
+                .addHeader("Accept", "application/json")
                 .build();
 
         Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {
+            String content = Objects.requireNonNull(response.body()).string();
+
             return new OAuthResponse(
                     false,
                     null,
                     response.code(),
-                    Objects.requireNonNull(response.body()).string(),
+                    content,
                     serialization.map(
                             String.class,
                             String.class,
-                            Objects.requireNonNull(response.body()).string()
+                            content
                     )
             );
         } catch (IOException e) {
@@ -139,20 +148,23 @@ public class OAuthRequest implements Request {
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(new FormBody(List.of(), List.of()))
+                .addHeader("Accept", "application/json")
                 .build();
 
         Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {
+            String content = Objects.requireNonNull(response.body()).string();
+
             return new OAuthResponse(
                     false,
                     null,
                     response.code(),
-                    Objects.requireNonNull(response.body()).string(),
+                    content,
                     serialization.map(
                             String.class,
                             String.class,
-                            Objects.requireNonNull(response.body()).string()
+                            content
                     )
             );
         } catch (IOException e) {
@@ -174,20 +186,23 @@ public class OAuthRequest implements Request {
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(new FormBody(keys, values))
+                .addHeader("Accept", "application/json")
                 .build();
 
         Call call = proxy == null ? client.newCall(request) : client(1500, proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {
+            String content = Objects.requireNonNull(response.body()).string();
+
             return new OAuthResponse(
                     false,
                     null,
                     response.code(),
-                    Objects.requireNonNull(response.body()).string(),
+                    content,
                     serialization.map(
                             String.class,
                             String.class,
-                            Objects.requireNonNull(response.body()).string()
+                            content
                     )
             );
         } catch (IOException e) {
