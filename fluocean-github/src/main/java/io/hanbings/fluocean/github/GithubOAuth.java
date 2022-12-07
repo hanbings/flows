@@ -56,7 +56,7 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Error> {
                 );
 
         if (response.code() == 200) {
-            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("")) {
+            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("code")) {
                 GithubAccess access = this.serialization()
                         .get()
                         .object(GithubAccess.class, response.raw());
