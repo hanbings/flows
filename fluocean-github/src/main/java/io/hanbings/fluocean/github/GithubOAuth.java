@@ -9,7 +9,7 @@ import io.hanbings.fluocean.common.utils.UrlUtils;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Error> {
+public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
     private GithubOAuth() {
         super(
                 "https://github.com/login/oauth/authorize",
@@ -29,12 +29,12 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Error> {
     }
 
     @Override
-    public Callback<GithubAccess, GithubAccess.Error> token(String url) {
+    public Callback<GithubAccess, GithubAccess.Wrong> token(String url) {
         return token(url, true);
     }
 
     @Override
-    public Callback<GithubAccess, GithubAccess.Error> token(String url, boolean raw) {
+    public Callback<GithubAccess, GithubAccess.Wrong> token(String url, boolean raw) {
         String code = url;
         try {
             code = raw ? UrlUtils.params(url).get("code") : url;
@@ -63,9 +63,9 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Error> {
 
                 return OAuthCallback.response(access.token(), access, null);
             } else {
-                GithubAccess.Error error = this.serialization()
+                GithubAccess.Wrong error = this.serialization()
                         .get()
-                        .object(GithubAccess.Error.class, response.raw());
+                        .object(GithubAccess.Wrong.class, response.raw());
 
                 return OAuthCallback.response(null, null, error);
             }

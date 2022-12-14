@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
-public class OAuth<D, E> implements Authable<D, E> {
+public class OAuth<D, W> implements Authable<D, W> {
     final String authorization;
     final String access;
     String client;
@@ -80,9 +80,7 @@ public class OAuth<D, E> implements Authable<D, E> {
             url.append("?");
 
             // map to string
-            temp.forEach((k, v) -> {
-                url.append(k).append("=").append(v).append("&");
-            });
+            temp.forEach((k, v) -> url.append(k).append("=").append(v).append("&"));
 
             // eat last '&' and return string
             return url.substring(0, url.length() - 1);
@@ -92,12 +90,12 @@ public class OAuth<D, E> implements Authable<D, E> {
     }
 
     @Override
-    public Callback<D, E> token(String url) {
+    public Callback<D, W> token(String url) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Callback<D, E> token(String code, boolean raw) {
+    public Callback<D, W> token(String code, boolean raw) {
         throw new UnsupportedOperationException();
     }
 }

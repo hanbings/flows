@@ -1,5 +1,5 @@
 package io.hanbings.fluocean.common.interfaces;
 
-public interface Refreshable<D, E> {
-    Callback<D, E> refresh(String token);
+public interface Refreshable<D, W> {
+    Callback<D, W> refresh(String token);
 }

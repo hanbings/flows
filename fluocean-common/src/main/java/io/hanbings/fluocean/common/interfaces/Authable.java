@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("SpellCheckingInspection")
-public interface Authable<D, E> {
+public interface Authable<D, W> {
     String authorize();
 
     String authorize(List<Enum<?>> scopes);
@@ -13,7 +13,7 @@ public interface Authable<D, E> {
 
     String authorize(List<Enum<?>> scopes, Map<String, String> params);
 
-    Callback<D, E> token(String url);
+    Callback<D, W> token(String url);
 
-    Callback<D, E> token(String code, boolean raw);
+    Callback<D, W> token(String code, boolean raw);
 }

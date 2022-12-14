@@ -2,20 +2,20 @@ package io.hanbings.fluocean.common.interfaces;
 
 import java.util.function.Consumer;
 
-public interface Callback<D, E> {
+public interface Callback<D, W> {
     D data();
 
-    E error();
+    W wrong();
 
     String token();
 
     Throwable throwable();
 
-    Callback<D, E> succeed(Consumer<D> data);
+    Callback<D, W> succeed(Consumer<D> data);
 
-    Callback<D, E> fail(Consumer<E> error);
+    Callback<D, W> fail(Consumer<W> wrong);
 
-    Callback<D, E> except(Consumer<Throwable> throwable);
+    Callback<D, W> except(Consumer<Throwable> throwable);
 
     boolean success();
 }

@@ -11,7 +11,7 @@ public record GithubAccess(
         @SerializedName("scope")
         String scope
 ) {
-    record Error(
+    record Wrong(
             @SerializedName("error_uri")
             String url,
             @SerializedName("error")
