@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 public class OAuthRequest implements Request {
     static SSLContext NOP_TLS_V12_SSL_CONTEXT;
@@ -209,26 +208,6 @@ public class OAuthRequest implements Request {
         } catch (IOException e) {
             return new OAuthResponse(true, e, 0, null, null);
         }
-    }
-
-    @Override
-    public void get(Serialization serialization, Proxy proxy, String url, Consumer<Response> callback) {
-        callback.accept(this.get(serialization, proxy, url));
-    }
-
-    @Override
-    public void get(Serialization serialization, Proxy proxy, String url, Map<String, String> params, Consumer<Response> callback) {
-        callback.accept(this.get(serialization, proxy, url, params));
-    }
-
-    @Override
-    public void post(Serialization serialization, Proxy proxy, String url, Consumer<Response> callback) {
-        callback.accept(this.post(serialization, proxy, url));
-    }
-
-    @Override
-    public void post(Serialization serialization, Proxy proxy, String url, Map<String, String> form, Consumer<Response> callback) {
-        callback.accept(this.post(serialization, proxy, url, form));
     }
 
     record OkHttpProxyInterceptor(Proxy proxy) implements Interceptor {

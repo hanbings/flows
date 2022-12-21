@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 public interface Request {
     Response get(Serialization serialization, Proxy proxy, String url);
@@ -16,14 +15,6 @@ public interface Request {
     Response post(Serialization serialization, Proxy proxy, String url);
 
     Response post(Serialization serialization, Proxy proxy, String url, Map<String, String> form);
-
-    void get(Serialization serialization, Proxy proxy, String url, Consumer<Response> callback);
-
-    void get(Serialization serialization, Proxy proxy, String url, Map<String, String> params, Consumer<Response> callback);
-
-    void post(Serialization serialization, Proxy proxy, String url, Consumer<Response> callback);
-
-    void post(Serialization serialization, Proxy proxy, String url, Map<String, String> form, Consumer<Response> callback);
 
     @Setter
     @Getter
