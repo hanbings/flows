@@ -59,7 +59,7 @@ public class OAuth<D, W> implements Authable<D, W> {
 
             IntStream.range(0, scopes.size()).forEach(count -> {
                 if (count != 0) {
-                    scope.append(",");
+                    scope.append("%20");
                 }
 
                 scope.append(scopes.get(count).toString());

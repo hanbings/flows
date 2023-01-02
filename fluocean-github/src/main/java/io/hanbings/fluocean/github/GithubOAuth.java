@@ -56,18 +56,18 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                 );
 
         if (response.code() == 200) {
-            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("code")) {
+            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("access_token")) {
                 GithubAccess access = this.serialization()
                         .get()
                         .object(GithubAccess.class, response.raw());
 
                 return OAuthCallback.response(access.token(), access, null);
             } else {
-                GithubAccess.Wrong error = this.serialization()
+                GithubAccess.Wrong wrong = this.serialization()
                         .get()
                         .object(GithubAccess.Wrong.class, response.raw());
 
-                return OAuthCallback.response(null, null, error);
+                return OAuthCallback.response(null, null, wrong);
             }
         }
 
@@ -75,5 +75,15 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                 null,
                 response.exception() ? response.throwable() : new IllegalArgumentException()
         );
+    }
+
+    public static void main(String... args) {
+        OAuth<GithubAccess, GithubAccess.Wrong> oauth = new GithubOAuth(
+                "98f0fbc315f6de388ac5",
+                "91cea69ced505382a6cfb7e2673716cbb7d869f5",
+                "https://nestsid.com/api/v0/login/oauth/github/callback"
+        );
+
+        System.out.println(oauth.token("a78d4d35f3780a8a9f28", false));
     }
 }
