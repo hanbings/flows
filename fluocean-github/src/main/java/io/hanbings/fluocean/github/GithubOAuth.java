@@ -76,14 +76,4 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                 response.exception() ? response.throwable() : new IllegalArgumentException()
         );
     }
-
-    public static void main(String... args) {
-        OAuth<GithubAccess, GithubAccess.Wrong> oauth = new GithubOAuth(
-                "98f0fbc315f6de388ac5",
-                "91cea69ced505382a6cfb7e2673716cbb7d869f5",
-                "https://nestsid.com/api/v0/login/oauth/github/callback"
-        );
-
-        System.out.println(oauth.token("a78d4d35f3780a8a9f28", false));
-    }
 }
