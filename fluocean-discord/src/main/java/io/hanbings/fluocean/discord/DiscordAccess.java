@@ -15,7 +15,8 @@ public record DiscordAccess(
         String scope
 ) {
     record Wrong(
-
+            @SerializedName("error")
+            String error
     ) {
     }
 }

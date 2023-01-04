@@ -2,11 +2,13 @@ package io.hanbings.fluocean.common;
 
 import io.hanbings.fluocean.common.function.Lazy;
 import io.hanbings.fluocean.common.interfaces.*;
+import io.hanbings.fluocean.common.utils.UrlUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class OAuth<D, W> implements Authable<D, W> {
 
     Supplier<Request.Proxy> proxy = null;
     Lazy<Request> request = Lazy.of(
-            () -> proxy == null ? new OAuthRequest() : new OAuthRequest(3000, proxy.get()));
+            () -> proxy == null ? new OAuthRequest() : new OAuthRequest(proxy.get()));
     Lazy<Serialization> serialization = Lazy.of(OAuthSerialization::new);
     Lazy<State> state = Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()));
 
@@ -91,11 +93,26 @@ public class OAuth<D, W> implements Authable<D, W> {
 
     @Override
     public Callback<D, W> token(String url) {
-        throw new UnsupportedOperationException();
+        return token(url, null);
     }
 
     @Override
-    public Callback<D, W> token(String code, String state) {
+    public Callback<D, W> token(String url, String redirect) {
+        String code;
+        String state;
+
+        try {
+            code = UrlUtils.params(url).get("code");
+            state = UrlUtils.params(url).get("state");
+        } catch (URISyntaxException e) {
+            return OAuthCallback.exception(null, e);
+        }
+
+        return token(code, state, redirect);
+    }
+
+    @Override
+    public Callback<D, W> token(String code, String state, String redirect) {
         throw new UnsupportedOperationException();
     }
 }

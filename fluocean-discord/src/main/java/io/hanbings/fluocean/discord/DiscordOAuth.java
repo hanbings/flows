@@ -3,16 +3,19 @@ package io.hanbings.fluocean.discord;
 import io.hanbings.fluocean.common.OAuth;
 import io.hanbings.fluocean.common.OAuthCallback;
 import io.hanbings.fluocean.common.interfaces.Callback;
+import io.hanbings.fluocean.common.interfaces.Refreshable;
 import io.hanbings.fluocean.common.interfaces.Response;
-import io.hanbings.fluocean.common.utils.UrlUtils;
+import io.hanbings.fluocean.common.interfaces.Revokable;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class DiscordOAuth extends OAuth<DiscordAccess, DiscordAccess.Wrong> {
+public class DiscordOAuth extends OAuth<DiscordAccess, DiscordAccess.Wrong>
+        implements Refreshable<DiscordAccess, DiscordAccess.Wrong>,
+        Revokable<DiscordRevoke, DiscordRevoke.Wrong> {
+    final String refreshment = "https://discord.com/api/oauth2/token";
     final String revocation = "https://discord.com/api/oauth2/token/revoke";
 
     private DiscordOAuth() {
@@ -78,45 +81,38 @@ public class DiscordOAuth extends OAuth<DiscordAccess, DiscordAccess.Wrong> {
     }
 
     @Override
-    public Callback<DiscordAccess, DiscordAccess.Wrong> token(String url) {
-        String code;
-        String state;
-
-        try {
-            code = UrlUtils.params(url).get("code");
-            state = UrlUtils.params(url).get("state");
-        } catch (URISyntaxException e) {
-            return OAuthCallback.exception(null, e);
-        }
-
+    public Callback<DiscordAccess, DiscordAccess.Wrong> token(String code, String state, String redirect) {
         Response response = this.request()
                 .get()
                 .post(
                         this.serialization().get(),
-                        null,
+                        this.proxy() == null ? null : this.proxy().get(),
                         this.access(),
                         Map.of(
                                 "client_id", this.client(),
                                 "client_secret", this.secret(),
+                                "grant_type", "authorization_code",
+                                "redirect_uri", redirect,
                                 "code", code,
                                 "state", state
                         )
                 );
 
         if (response.code() == 200) {
-            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("access_token")) {
-                DiscordAccess access = this.serialization()
-                        .get()
-                        .object(DiscordAccess.class, response.raw());
+            DiscordAccess access = this.serialization()
+                    .get()
+                    .object(DiscordAccess.class, response.raw());
 
-                return OAuthCallback.response(access.accessToken(), access, null);
-            } else {
-                DiscordAccess.Wrong wrong = this.serialization()
-                        .get()
-                        .object(DiscordAccess.Wrong.class, response.raw());
+            return OAuthCallback.response(access.accessToken(), access, null);
 
-                return OAuthCallback.response(null, null, wrong);
-            }
+        }
+
+        if (response.code() == 400) {
+            DiscordAccess.Wrong wrong = this.serialization()
+                    .get()
+                    .object(DiscordAccess.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong);
         }
 
         return OAuthCallback.exception(
@@ -126,40 +122,17 @@ public class DiscordOAuth extends OAuth<DiscordAccess, DiscordAccess.Wrong> {
     }
 
     @Override
-    public Callback<DiscordAccess, DiscordAccess.Wrong> token(String code, String state) {
-        Response response = this.request()
-                .get()
-                .post(
-                        this.serialization().get(),
-                        null,
-                        this.access(),
-                        Map.of(
-                                "client_id", this.client(),
-                                "client_secret", this.secret(),
-                                "code", code,
-                                "state", state
-                        )
-                );
+    public Callback<DiscordAccess, DiscordAccess.Wrong> refresh(String token) {
+        return refresh(token, null);
+    }
 
-        if (response.code() == 200) {
-            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("access_token")) {
-                DiscordAccess access = this.serialization()
-                        .get()
-                        .object(DiscordAccess.class, response.raw());
+    @Override
+    public Callback<DiscordAccess, DiscordAccess.Wrong> refresh(String token, String redirect) {
+        return null;
+    }
 
-                return OAuthCallback.response(access.accessToken(), access, null);
-            } else {
-                DiscordAccess.Wrong wrong = this.serialization()
-                        .get()
-                        .object(DiscordAccess.Wrong.class, response.raw());
-
-                return OAuthCallback.response(null, null, wrong);
-            }
-        }
-
-        return OAuthCallback.exception(
-                null,
-                response.exception() ? response.throwable() : new IllegalArgumentException()
-        );
+    @Override
+    public Callback<DiscordRevoke, DiscordRevoke.Wrong> revoke(String token) {
+        return null;
     }
 }

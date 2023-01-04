@@ -15,5 +15,7 @@ public interface Authable<D, W> {
 
     Callback<D, W> token(String url);
 
-    Callback<D, W> token(String code, String state);
+    Callback<D, W> token(String url, String redirect);
+
+    Callback<D, W> token(String code, String state, String redirect);
 }
