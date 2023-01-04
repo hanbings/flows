@@ -30,14 +30,12 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
 
     @Override
     public Callback<GithubAccess, GithubAccess.Wrong> token(String url) {
-        return token(url, true);
-    }
+        String code;
+        String state;
 
-    @Override
-    public Callback<GithubAccess, GithubAccess.Wrong> token(String url, boolean raw) {
-        String code = url;
         try {
-            code = raw ? UrlUtils.params(url).get("code") : url;
+            code = UrlUtils.params(url).get("code");
+            state = UrlUtils.params(url).get("state");
         } catch (URISyntaxException e) {
             return OAuthCallback.exception(null, e);
         }
@@ -51,7 +49,8 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                         Map.of(
                                 "client_id", this.client(),
                                 "client_secret", this.secret(),
-                                "code", code
+                                "code", code,
+                                "state", state
                         )
                 );
 
@@ -61,7 +60,45 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                         .get()
                         .object(GithubAccess.class, response.raw());
 
-                return OAuthCallback.response(access.token(), access, null);
+                return OAuthCallback.response(access.accessToken(), access, null);
+            } else {
+                GithubAccess.Wrong wrong = this.serialization()
+                        .get()
+                        .object(GithubAccess.Wrong.class, response.raw());
+
+                return OAuthCallback.response(null, null, wrong);
+            }
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
+    }
+
+    @Override
+    public Callback<GithubAccess, GithubAccess.Wrong> token(String code, String state) {
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        null,
+                        this.access(),
+                        Map.of(
+                                "client_id", this.client(),
+                                "client_secret", this.secret(),
+                                "code", code,
+                                "state", state
+                        )
+                );
+
+        if (response.code() == 200) {
+            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("access_token")) {
+                GithubAccess access = this.serialization()
+                        .get()
+                        .object(GithubAccess.class, response.raw());
+
+                return OAuthCallback.response(access.accessToken(), access, null);
             } else {
                 GithubAccess.Wrong wrong = this.serialization()
                         .get()

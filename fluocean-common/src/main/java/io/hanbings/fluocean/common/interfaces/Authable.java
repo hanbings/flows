@@ -7,13 +7,13 @@ import java.util.Map;
 public interface Authable<D, W> {
     String authorize();
 
-    String authorize(List<Enum<?>> scopes);
+    String authorize(List<String> scopes);
 
     String authorize(Map<String, String> params);
 
-    String authorize(List<Enum<?>> scopes, Map<String, String> params);
+    String authorize(List<String> scopes, Map<String, String> params);
 
     Callback<D, W> token(String url);
 
-    Callback<D, W> token(String code, boolean raw);
+    Callback<D, W> token(String code, String state);
 }

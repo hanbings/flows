@@ -38,7 +38,7 @@ public class OAuth<D, W> implements Authable<D, W> {
     }
 
     @Override
-    public String authorize(List<Enum<?>> scopes) {
+    public String authorize(List<String> scopes) {
         return authorize(scopes, Map.of());
     }
 
@@ -48,7 +48,7 @@ public class OAuth<D, W> implements Authable<D, W> {
     }
 
     @Override
-    public String authorize(List<Enum<?>> scopes, Map<String, String> params) {
+    public String authorize(List<String> scopes, Map<String, String> params) {
         Map<String, String> temp = new HashMap<>() {{
             put("client_id", client);
             put("redirect_uri", redirect);
@@ -62,7 +62,7 @@ public class OAuth<D, W> implements Authable<D, W> {
                     scope.append("%20");
                 }
 
-                scope.append(scopes.get(count).toString());
+                scope.append(scopes.get(count));
             });
 
             if (scope.length() != 0) {
@@ -95,7 +95,7 @@ public class OAuth<D, W> implements Authable<D, W> {
     }
 
     @Override
-    public Callback<D, W> token(String code, boolean raw) {
+    public Callback<D, W> token(String code, String state) {
         throw new UnsupportedOperationException();
     }
 }
