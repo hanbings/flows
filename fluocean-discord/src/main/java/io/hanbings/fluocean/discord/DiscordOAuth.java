@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class DiscordOAuth extends OAuth<DiscordAccess, DiscordAccess.Wrong>
-        implements Refreshable<DiscordAccess, DiscordAccess.Wrong>,
+@SuppressWarnings("unused")
+public class DiscordOAuth
+        extends
+        OAuth<DiscordAccess, DiscordAccess.Wrong>
+        implements
+        Refreshable<DiscordAccess, DiscordAccess.Wrong>,
         Revokable<DiscordRevoke, DiscordRevoke.Wrong> {
     final String refreshment = "https://discord.com/api/oauth2/token";
     final String revocation = "https://discord.com/api/oauth2/token/revoke";
@@ -123,16 +127,69 @@ public class DiscordOAuth extends OAuth<DiscordAccess, DiscordAccess.Wrong>
 
     @Override
     public Callback<DiscordAccess, DiscordAccess.Wrong> refresh(String token) {
-        return refresh(token, null);
-    }
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        this.refreshment,
+                        Map.of(
+                                "client_id", this.client(),
+                                "client_secret", this.secret(),
+                                "grant_type", "refresh_token",
+                                "refresh_token", token
+                        )
+                );
 
-    @Override
-    public Callback<DiscordAccess, DiscordAccess.Wrong> refresh(String token, String redirect) {
-        return null;
+        if (response.code() == 200) {
+            DiscordAccess access = this.serialization()
+                    .get()
+                    .object(DiscordAccess.class, response.raw());
+
+            return OAuthCallback.response(access.accessToken(), access, null);
+
+        }
+
+        if (response.code() == 400) {
+            DiscordAccess.Wrong wrong = this.serialization()
+                    .get()
+                    .object(DiscordAccess.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong);
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
     }
 
     @Override
     public Callback<DiscordRevoke, DiscordRevoke.Wrong> revoke(String token) {
-        return null;
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        this.revocation,
+                        Map.of(
+                                "client_id", this.client(),
+                                "client_secret", this.secret(),
+                                "token", token
+                        )
+                );
+
+        if (response.code() == 200) {
+            DiscordRevoke access = this.serialization()
+                    .get()
+                    .object(DiscordRevoke.class, response.raw());
+
+            return OAuthCallback.response(null, access, null);
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
     }
 }
