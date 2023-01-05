@@ -6,6 +6,7 @@ import io.hanbings.fluocean.common.interfaces.Serialization;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -67,11 +68,8 @@ public class OAuthRequest implements Request {
             Map<String, String> headers
     ) {
         okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).get();
-
         headers.forEach(builder::addHeader);
-
         okhttp3.Request request = builder.build();
-
         Call call = proxy == null ? client.newCall(request) : client(proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {
@@ -106,6 +104,7 @@ public class OAuthRequest implements Request {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public Response post(
             Serialization serialization,
             Proxy proxy,
@@ -113,22 +112,24 @@ public class OAuthRequest implements Request {
             Map<String, String> form,
             Map<String, String> headers
     ) {
-        List<String> keys = new ArrayList<>();
-        List<String> values = new ArrayList<>();
+        okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
 
-        form.forEach((k, v) -> {
-            keys.add(k);
-            values.add(v);
-        });
+        if (form.size() > 0) {
+            List<String> keys = new ArrayList<>();
+            List<String> values = new ArrayList<>();
 
-        okhttp3.Request.Builder builder = new okhttp3.Request.Builder()
-                .url(url)
-                .post(new FormBody(keys, values));
+            form.forEach((k, v) -> {
+                keys.add(k);
+                values.add(v);
+            });
+
+            builder.post(new FormBody(keys, values));
+        } else {
+            builder.post(RequestBody.create(null, ""));
+        }
 
         headers.forEach(builder::addHeader);
-
         okhttp3.Request request = builder.build();
-
         Call call = proxy == null ? client.newCall(request) : client(proxy).newCall(request);
 
         try (okhttp3.Response response = call.execute()) {

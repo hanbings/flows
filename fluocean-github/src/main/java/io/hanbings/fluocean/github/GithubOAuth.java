@@ -7,6 +7,7 @@ import io.hanbings.fluocean.common.interfaces.Response;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
     private GithubOAuth() {
         super(
