@@ -1,6 +1,22 @@
 package io.hanbings.fluocean.dropbox;
 
-public record DropboxRefresh() {
-    record Wrong() {
+import com.google.gson.annotations.SerializedName;
+
+public record DropboxRefresh(
+        @SerializedName("access_token")
+        String accessToken,
+        @SerializedName("expires_in")
+        String expiresIn,
+        @SerializedName("token_type")
+        String tokenType
+) {
+    record Wrong(
+            @SerializedName("error")
+            String error,
+            @SerializedName("error_description")
+            String errorDescription,
+            @SerializedName("state")
+            String state
+    ) {
     }
 }

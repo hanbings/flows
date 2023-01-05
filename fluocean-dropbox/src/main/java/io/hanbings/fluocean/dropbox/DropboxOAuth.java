@@ -130,6 +130,44 @@ public class DropboxOAuth
 
     @Override
     public Callback<DropboxRefresh, DropboxRefresh.Wrong> refresh(String token) {
-        return null;
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        this.access(),
+                        Map.of(
+                                "client_id", this.client(),
+                                "client_secret", this.secret(),
+                                "grant_type", "refresh_token",
+                                "refresh_token", token
+                        ),
+                        Map.of(
+                                "Accept", "application/json",
+                                "Content-Type", "application/x-www-form-urlencoded"
+                        )
+                );
+
+        if (response.code() == 200) {
+            DropboxRefresh access = this.serialization()
+                    .get()
+                    .object(DropboxRefresh.class, response.raw());
+
+            return OAuthCallback.response(access.accessToken(), access, null);
+
+        }
+
+        if (response.code() == 400) {
+            DropboxRefresh.Wrong wrong = this.serialization()
+                    .get()
+                    .object(DropboxRefresh.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong);
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
     }
 }
