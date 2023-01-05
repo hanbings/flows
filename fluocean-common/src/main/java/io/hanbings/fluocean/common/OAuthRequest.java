@@ -49,41 +49,28 @@ public class OAuthRequest implements Request {
     @Override
     public Response get(Serialization serialization,
                         @Nullable Proxy proxy, String url) {
-        okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("Accept", "application/json")
-                .build();
-
-        Call call = proxy == null ? client.newCall(request) : client(proxy).newCall(request);
-
-        try (okhttp3.Response response = call.execute()) {
-            String content = Objects.requireNonNull(response.body()).string();
-
-            return new OAuthResponse(
-                    false,
-                    null,
-                    response.code(),
-                    content,
-                    serialization.map(
-                            String.class,
-                            String.class,
-                            content
-                    )
-            );
-        } catch (IOException e) {
-            return new OAuthResponse(true, e, 0, null, null);
-        }
+        return get(serialization, proxy, url, Map.of(), Map.of());
     }
 
     @Override
     public Response get(Serialization serialization,
                         @Nullable Proxy proxy, String url, Map<String, String> params) {
-        okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("Accept", "application/json")
-                .build();
+        return get(serialization, proxy, url, params, Map.of());
+    }
+
+    @Override
+    public Response get(
+            Serialization serialization,
+            Proxy proxy,
+            String url,
+            Map<String, String> params,
+            Map<String, String> headers
+    ) {
+        okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).get();
+
+        headers.forEach(builder::addHeader);
+
+        okhttp3.Request request = builder.build();
 
         Call call = proxy == null ? client.newCall(request) : client(proxy).newCall(request);
 
@@ -109,37 +96,23 @@ public class OAuthRequest implements Request {
     @Override
     public Response post(Serialization serialization,
                          @Nullable Proxy proxy, String url) {
-        okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .post(new FormBody(List.of(), List.of()))
-                .addHeader("Accept", "application/json")
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .build();
-
-        Call call = proxy == null ? client.newCall(request) : client(proxy).newCall(request);
-
-        try (okhttp3.Response response = call.execute()) {
-            String content = Objects.requireNonNull(response.body()).string();
-
-            return new OAuthResponse(
-                    false,
-                    null,
-                    response.code(),
-                    content,
-                    serialization.map(
-                            String.class,
-                            String.class,
-                            content
-                    )
-            );
-        } catch (IOException e) {
-            return new OAuthResponse(true, e, 0, null, null);
-        }
+        return this.post(serialization, proxy, url, Map.of(), Map.of());
     }
 
     @Override
     public Response post(Serialization serialization,
                          @Nullable Proxy proxy, String url, Map<String, String> form) {
+        return this.post(serialization, proxy, url, form, Map.of());
+    }
+
+    @Override
+    public Response post(
+            Serialization serialization,
+            Proxy proxy,
+            String url,
+            Map<String, String> form,
+            Map<String, String> headers
+    ) {
         List<String> keys = new ArrayList<>();
         List<String> values = new ArrayList<>();
 
@@ -148,12 +121,13 @@ public class OAuthRequest implements Request {
             values.add(v);
         });
 
-        okhttp3.Request request = new okhttp3.Request.Builder()
+        okhttp3.Request.Builder builder = new okhttp3.Request.Builder()
                 .url(url)
-                .post(new FormBody(keys, values))
-                .addHeader("Accept", "application/json")
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .build();
+                .post(new FormBody(keys, values));
+
+        headers.forEach(builder::addHeader);
+
+        okhttp3.Request request = builder.build();
 
         Call call = proxy == null ? client.newCall(request) : client(proxy).newCall(request);
 

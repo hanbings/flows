@@ -12,9 +12,15 @@ public interface Request {
 
     Response get(Serialization serialization, Proxy proxy, String url, Map<String, String> params);
 
+    Response get(Serialization serialization, Proxy proxy, String url,
+                 Map<String, String> params, Map<String, String> headers);
+
     Response post(Serialization serialization, Proxy proxy, String url);
 
     Response post(Serialization serialization, Proxy proxy, String url, Map<String, String> form);
+
+    Response post(Serialization serialization, Proxy proxy, String url,
+                  Map<String, String> form, Map<String, String> headers);
 
     @Setter
     @Getter

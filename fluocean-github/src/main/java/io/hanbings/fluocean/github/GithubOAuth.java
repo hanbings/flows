@@ -40,6 +40,10 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                                 "redirect_uri", redirect,
                                 "code", code,
                                 "state", state
+                        ),
+                        Map.of(
+                                "Accept", "application/json",
+                                "Content-Type", "application/x-www-form-urlencoded"
                         )
                 );
 

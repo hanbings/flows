@@ -99,6 +99,10 @@ public class DiscordOAuth
                                 "redirect_uri", redirect,
                                 "code", code,
                                 "state", state
+                        ),
+                        Map.of(
+                                "Accept", "application/json",
+                                "Content-Type", "application/x-www-form-urlencoded"
                         )
                 );
 
@@ -138,6 +142,10 @@ public class DiscordOAuth
                                 "client_secret", this.secret(),
                                 "grant_type", "refresh_token",
                                 "refresh_token", token
+                        ),
+                        Map.of(
+                                "Accept", "application/json",
+                                "Content-Type", "application/x-www-form-urlencoded"
                         )
                 );
 
@@ -176,6 +184,10 @@ public class DiscordOAuth
                                 "client_id", this.client(),
                                 "client_secret", this.secret(),
                                 "token", token
+                        ),
+                        Map.of(
+                                "Accept", "application/json",
+                                "Content-Type", "application/x-www-form-urlencoded"
                         )
                 );
 
