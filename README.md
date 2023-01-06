@@ -24,9 +24,9 @@
 ```java
 // 创建 OAuth 原始处理器
 OAuth<GithubAccess, GithubAccess.Wrong> oauth = new GithubOAuth(
-		"id",
-		"secret",
-		"https://exmaple.com/api/v0/login/oauth/github/callback"
+	"id",
+	"secret",
+	"https://exmaple.com/api/v0/login/oauth/github/callback"
 );
 
 // 生成授权 url
@@ -44,9 +44,9 @@ oauth.token("code", "state", "redirect");
         
 // 处理返回值
 oauth.token("code", "state", "redirect")
-		.succeed(data -> System.out.println(data.accessToken()))
-		.fail(wrong -> System.out.println(wrong.errorDescription()))
-		.except(throwable -> System.out.println(throwable.getMessage()));
+	.succeed(data -> System.out.println(data.accessToken()))
+	.fail(wrong -> System.out.println(wrong.errorDescription()))
+	.except(throwable -> System.out.println(throwable.getMessage()));
         
 // 假设请求成功 直接获取数据
 GithubAccess access = oauth.token("code", "state", "redirect").data();
@@ -56,13 +56,13 @@ GithubAccess access = oauth.token("code", "state", "redirect").data();
 
 ```java
 oauth.proxy(() ->
-		new Request.Proxy(
-				Proxy.Type.SOCKS,
-				"127.0.0.1",
-				10086,
-				"username",
-				"password"
-		)
+	new Request.Proxy(
+		Proxy.Type.SOCKS,
+		"127.0.0.1",
+		10086,
+		"username",
+		"password"
+	)
 );
 ```
 
@@ -72,7 +72,7 @@ oauth.proxy(() ->
 
 ```java
 oauth.state(
-    	Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()))
+    Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()))
 );
 ```
 
@@ -91,26 +91,26 @@ oauth.request(Lazy.of(OAuthRequest::new));
 
 ```java
 oauth.serialization(
-		Lazy.of(() -> new Serialization() {
-				final Gson gson = new Gson();
+	Lazy.of(() -> new Serialization() {
+		final Gson gson = new Gson();
 
-				@Override
-				public <T> T object(Class<T> type, String raw) {
-						return gson.fromJson(raw, type);
-				}
+		@Override
+		public <T> T object(Class<T> type, String raw) {
+			return gson.fromJson(raw, type);
+		}
 
-				@Override
-				public <K, V> Map<K, V> map(Class<K> key, Class<V> value, String raw) {
-					return gson.fromJson(raw, new TypeToken<Map<K, V>>() {
-					}.getType());
-				}
+		@Override
+		public <K, V> Map<K, V> map(Class<K> key, Class<V> value, String raw) {
+			return gson.fromJson(raw, new TypeToken<Map<K, V>>() {
+			}.getType());
+		}
 
-				@Override
-				public <T> List<T> list(Class<T> type, String raw) {
-					return gson.fromJson(raw, new TypeToken<List<T>>() {
-					}.getType());
-				}
-		})
+		@Override
+		public <T> List<T> list(Class<T> type, String raw) {
+			return gson.fromJson(raw, new TypeToken<List<T>>() {
+			}.getType());
+		}
+	})
 );
 ```
 
