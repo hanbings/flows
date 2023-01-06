@@ -1,11 +1,4 @@
-task collect(type: Copy) {
-    destinationDir = file('build/libs')
-    subprojects.each { project ->
-        from project.file('build/libs')
-    }
-}
-
-subprojects {
+allprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
@@ -17,8 +10,8 @@ subprojects {
     }
 
     dependencies {
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 
         compileOnly 'org.projectlombok:lombok:1.18.24'
         annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -27,7 +20,7 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
         // https://mvnrepository.com/artifact/org.jetbrains/annotations
-        compileOnly 'org.jetbrains:annotations:23.0.0'
+        compileOnly 'org.jetbrains:annotations:23.1.0'
     }
 
     java {
@@ -83,4 +76,26 @@ subprojects {
             }
         }
     }
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+    }
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+task collect(type: Copy) {
+    destinationDir = file('build/libs')
+    subprojects.each {p -> from p.file('build/libs') }
+}
+
+dependencies {
+    subprojects.each {p -> implementation create(p) }
 }
