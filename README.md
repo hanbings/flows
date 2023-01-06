@@ -20,7 +20,34 @@
 **Github OAuth 示例**
 
 ```java
+// 创建 OAuth 原始处理器
+OAuth<GithubAccess, GithubAccess.Wrong> oauth = new GithubOAuth(
+        "id",
+        "secret",
+        "https://exmaple.com/api/v0/login/oauth/github/callback"
+);
 
+// 生成授权 url
+String url = oauth.authorize();
+// 生成带参数或指定 scope
+String spec = oauth.authorize(List.of("email"), Map.of("Accept", "application/json"));
+        
+//解析回调的 url 并获取 token
+// 输入原始 url 自动解析 code 以及 state
+oauth.token("");
+// 更改回调地址
+oauth.token("","");
+// 手动指定参数
+oauth.token("", "","");
+        
+// 处理返回值
+oauth.token("code", "state", "callback")
+        .succeed(data -> System.out.println(data.accessToken()))
+        .fail(wrong -> System.out.println(wrong.errorDescription()))
+        .except(throwable -> System.out.println(throwable.getMessage()));
+        
+// 假设请求成功 直接获取数据
+GithubAccess access = oauth.token("code", "state", "callback").data();
 ```
 
 **使用 Socks 代理**
