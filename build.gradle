@@ -98,4 +98,17 @@ task collect(type: Copy) {
 
 dependencies {
     subprojects.each {p -> implementation create(p) }
+    subprojects.stream()
+            .filter(p -> p.name != "fluocean-common")
+            .each {p ->
+                {
+                    p.dependencies {
+                        // common
+                        implementation project(":fluocean-common")
+
+                        // https://mvnrepository.com/artifact/com.google.code.gson/gson
+                        implementation 'com.google.code.gson:gson:2.10'
+                    }
+                }
+            }
 }
