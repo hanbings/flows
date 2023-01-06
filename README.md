@@ -15,16 +15,18 @@
 - 默认 Http 客户端实现支持 Socks 代理
 - 可爱
 
-## ⚡️ 快速开始
+
 
 **Github OAuth 示例**
+
+洋流提供了许多的重载方法，用于应对不同情况下的请求，有些带自有请求头的，也有要求必须要 Scope 的。
 
 ```java
 // 创建 OAuth 原始处理器
 OAuth<GithubAccess, GithubAccess.Wrong> oauth = new GithubOAuth(
-        "id",
-        "secret",
-        "https://exmaple.com/api/v0/login/oauth/github/callback"
+		"id",
+		"secret",
+		"https://exmaple.com/api/v0/login/oauth/github/callback"
 );
 
 // 生成授权 url
@@ -34,45 +36,88 @@ String spec = oauth.authorize(List.of("email"), Map.of("Accept", "application/js
         
 //解析回调的 url 并获取 token
 // 输入原始 url 自动解析 code 以及 state
-oauth.token("");
+oauth.token("url");
 // 更改回调地址
-oauth.token("","");
+oauth.token("url", "redirect");
 // 手动指定参数
-oauth.token("", "","");
+oauth.token("code", "state", "redirect");
         
 // 处理返回值
-oauth.token("code", "state", "callback")
-        .succeed(data -> System.out.println(data.accessToken()))
-        .fail(wrong -> System.out.println(wrong.errorDescription()))
-        .except(throwable -> System.out.println(throwable.getMessage()));
+oauth.token("code", "state", "redirect")
+		.succeed(data -> System.out.println(data.accessToken()))
+		.fail(wrong -> System.out.println(wrong.errorDescription()))
+		.except(throwable -> System.out.println(throwable.getMessage()));
         
 // 假设请求成功 直接获取数据
-GithubAccess access = oauth.token("code", "state", "callback").data();
+GithubAccess access = oauth.token("code", "state", "redirect").data();
 ```
 
 **使用 Socks 代理**
 
 ```java
-
+oauth.proxy(() ->
+		new Request.Proxy(
+				Proxy.Type.SOCKS,
+				"127.0.0.1",
+				10086,
+				"username",
+				"password"
+		)
+);
 ```
 
 **更换 State 生成器**
 
-```java
+默认随机生成 UUID 并设置 300 秒有效期
 
+```java
+oauth.state(
+    	Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()))
+);
 ```
 
 **更换 Http 客户端**
 
-```java
+默认使用 Okhttp 发起请求
 
+```java
+// 实现比较繁杂 就不展示啦 x
+oauth.request(Lazy.of(OAuthRequest::new));
 ```
 
 **更换 Json 解析器**
 
-```java
+默认使用 Gson 作为 Json 解析器
 
+```java
+oauth.serialization(
+		Lazy.of(() -> new Serialization() {
+				final Gson gson = new Gson();
+
+				@Override
+				public <T> T object(Class<T> type, String raw) {
+						return gson.fromJson(raw, type);
+				}
+
+				@Override
+				public <K, V> Map<K, V> map(Class<K> key, Class<V> value, String raw) {
+					return gson.fromJson(raw, new TypeToken<Map<K, V>>() {
+					}.getType());
+				}
+
+				@Override
+				public <T> List<T> list(Class<T> type, String raw) {
+					return gson.fromJson(raw, new TypeToken<List<T>>() {
+					}.getType());
+				}
+		})
+);
 ```
+
+## ⚡️ 快速开始
+
+*稍后补充*
+
 
 ## ⚖ 开源许可
 
