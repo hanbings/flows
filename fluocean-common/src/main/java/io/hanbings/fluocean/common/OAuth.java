@@ -16,6 +16,14 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+/**
+ * OAuth 平台需要实现的基本接口 <br>
+ * 一般来说参数最多的是具体实现，其余均为可选参数的重载 <br>
+ * 各个平台的注意事项参见各个平台 *OAuth 类的注释
+ *
+ * @param <D> data 数据类 是描述成功接收 Access Token 的数据容器
+ * @param <W> wrong 错误类 是描述成功请求但返回错误状态码的数据容器
+ */
 @Setter
 @Getter
 @RequiredArgsConstructor
@@ -49,6 +57,17 @@ public class OAuth<D, W> implements Authable<D, W> {
         return authorize(List.of(), params);
     }
 
+    /**
+     * 该方法默认添加 <br>
+     * 1. client_id OAuth 服务商提供的 Client ID <br>
+     * 2. redirect_uri 在 OAuth 服务商设置回调 url <br>
+     * 3. state 自动生成和判断的安全凭据 <br>
+     * 在 scope 默认的分隔符是 %20 即空格的 http encode
+     *
+     * @param scopes 构造 OAuth 请求范围
+     * @param params 构造 authorize url 的参数
+     * @return 返回 authorize url
+     */
     @Override
     public String authorize(List<String> scopes, Map<String, String> params) {
         Map<String, String> temp = new HashMap<>() {{
@@ -111,6 +130,14 @@ public class OAuth<D, W> implements Authable<D, W> {
         return token(code, state, redirect);
     }
 
+    /**
+     * 该方法默认未实现 需要依据平台对 OAuth 标准的执行进行视频
+     *
+     * @param code     授权码
+     * @param state    自动生成和判断的安全凭据
+     * @param redirect 回调 url
+     * @return 返回 authorize url
+     */
     @Override
     public Callback<D, W> token(String code, String state, String redirect) {
         throw new UnsupportedOperationException();
