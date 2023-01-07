@@ -5,10 +5,11 @@ import io.hanbings.fluocean.common.interfaces.Response;
 import io.hanbings.fluocean.common.interfaces.Serialization;
 import lombok.AllArgsConstructor;
 
+import java.io.IOException;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.util.ArrayList;
+import java.net.http.HttpResponse;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -58,25 +59,63 @@ public class OAuthModernHttpRequest implements Request {
             Map<String, String> params,
             Map<String, String> headers
     ) {
-        String[] strings = params.entrySet()
-                .stream()
-                .collect(
-                        ArrayList<String>::new,
-                        (l, s) -> {
-                            l.add(s.getKey());
-                            l.add(s.getValue());
-                        },
-                        ArrayList::addAll
-                )
-                .toArray(String[]::new);
+        // 处理 url 的 params
+        URI check;
+        URI target;
 
-        HttpRequest request = HttpRequest.newBuilder()
+        try {
+            // 从旧的 url 创建 URI 对象
+            check = new URI(url);
+
+            StringBuilder strings = new StringBuilder();
+
+            // 判断是否已经有 query 参数 如果没有还需要 & 带在 url 尾部
+            if (check.getQuery() != null) {
+                strings.append(check.getQuery()).append("&");
+            }
+            // 转换参数拼接到 url 尾部
+            params.forEach((k, v) -> strings.append(k).append("=").append(v).append("&"));
+
+            // 构造新 url
+            target = new URI(
+                    check.getScheme(),
+                    check.getAuthority(),
+                    check.getPath(),
+                    strings.toString(),
+                    check.getFragment()
+            );
+        } catch (URISyntaxException e) {
+            return new OAuthResponse(true, e, 0, null, null);
+        }
+
+        // 为了掺入 headers 参数拆分 builder
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(url))
-                .headers(strings)
-                .build();
+                .uri(target);
+        // 添加 headers
+        headers.forEach(builder::header);
 
-        return null;
+        // 发出请求
+        try {
+            HttpResponse<String> response = client.send(
+                    builder.build(),
+                    HttpResponse.BodyHandlers.ofString()
+            );
+
+            return new OAuthResponse(
+                    false,
+                    null,
+                    response.statusCode(),
+                    response.body(),
+                    serialization.map(
+                            String.class,
+                            String.class,
+                            response.body()
+                    )
+            );
+        } catch (IOException | InterruptedException e) {
+            return new OAuthResponse(true, e, 0, null, null);
+        }
     }
 
     @Override
@@ -98,6 +137,38 @@ public class OAuthModernHttpRequest implements Request {
             Map<String, String> form,
             Map<String, String> headers
     ) {
-        return null;
+        // 构造表单
+        StringBuilder strings = new StringBuilder();
+        // 拼接数据
+        form.forEach((k, v) -> strings.append(k).append("=").append(v).append("&"));
+
+        // 为了掺入 headers 参数拆分 builder
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .POST(HttpRequest.BodyPublishers.ofString(strings.toString()))
+                .uri(URI.create(url));
+        // 添加 headers
+        headers.forEach(builder::header);
+
+        // 发出请求
+        try {
+            HttpResponse<String> response = client.send(
+                    builder.build(),
+                    HttpResponse.BodyHandlers.ofString()
+            );
+
+            return new OAuthResponse(
+                    false,
+                    null,
+                    response.statusCode(),
+                    response.body(),
+                    serialization.map(
+                            String.class,
+                            String.class,
+                            response.body()
+                    )
+            );
+        } catch (IOException | InterruptedException e) {
+            return new OAuthResponse(true, e, 0, null, null);
+        }
     }
 }
