@@ -77,7 +77,7 @@ public class DropboxOAuth
                     .get()
                     .object(DropboxAccess.class, response.raw());
 
-            return OAuthCallback.response(access.accessToken(), access, null);
+            return OAuthCallback.response(access.accessToken(), access, null, response);
 
         }
 
@@ -86,7 +86,7 @@ public class DropboxOAuth
                     .get()
                     .object(DropboxAccess.Wrong.class, response.raw());
 
-            return OAuthCallback.response(null, null, wrong);
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return OAuthCallback.exception(
@@ -119,7 +119,7 @@ public class DropboxOAuth
                     .get()
                     .object(DropboxRevoke.class, "{ }");
 
-            return OAuthCallback.response(null, access, null);
+            return OAuthCallback.response(null, access, null, response);
         }
 
         return OAuthCallback.exception(
@@ -153,7 +153,7 @@ public class DropboxOAuth
                     .get()
                     .object(DropboxRefresh.class, response.raw());
 
-            return OAuthCallback.response(access.accessToken(), access, null);
+            return OAuthCallback.response(access.accessToken(), access, null, response);
 
         }
 
@@ -162,7 +162,7 @@ public class DropboxOAuth
                     .get()
                     .object(DropboxRefresh.Wrong.class, response.raw());
 
-            return OAuthCallback.response(null, null, wrong);
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return OAuthCallback.exception(

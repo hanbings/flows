@@ -1,6 +1,8 @@
 package io.hanbings.fluocean.common;
 
 import io.hanbings.fluocean.common.interfaces.Callback;
+import io.hanbings.fluocean.common.interfaces.Response;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -9,20 +11,22 @@ public class OAuthCallback {
     private OAuthCallback() {
     }
 
-    public static <D, W> Callback<D, W> response(String token, @Nullable D data, @Nullable W wrong) {
+    public static <D, W> Callback<D, W> response(
+            String token, @Nullable D data, @Nullable W wrong, @NotNull Response response
+    ) {
         return (data == null && wrong == null) ?
-                new OAuthCallback.Exception<>(token, new IllegalArgumentException()) :
+                new OAuthCallback.Exception<>(token, new IllegalArgumentException(), null) :
                 ((wrong == null) ?
-                        new OAuthCallback.Success<>(token, data) :
-                        new OAuthCallback.Failure<>(token, wrong)
+                        new OAuthCallback.Success<>(token, data, response) :
+                        new OAuthCallback.Failure<>(token, wrong, response)
                 );
     }
 
     public static <D, W> Callback<D, W> exception(String token, Throwable throwable) {
-        return new OAuthCallback.Exception<>(token, throwable);
+        return new OAuthCallback.Exception<>(token, throwable, null);
     }
 
-    record Success<D, W>(String token, D data) implements Callback<D, W> {
+    record Success<D, W>(String token, D data, Response response) implements Callback<D, W> {
 
         @Override
         public W wrong() {
@@ -37,6 +41,13 @@ public class OAuthCallback {
         @Override
         public Callback<D, W> succeed(Consumer<D> data) {
             data.accept(this.data);
+
+            return this;
+        }
+
+        @Override
+        public Callback<D, W> completed(Consumer<Response> response) {
+            response.accept(this.response);
 
             return this;
         }
@@ -57,7 +68,7 @@ public class OAuthCallback {
         }
     }
 
-    record Failure<D, W>(String token, W wrong) implements Callback<D, W> {
+    record Failure<D, W>(String token, W wrong, Response response) implements Callback<D, W> {
         @Override
         public D data() {
             return null;
@@ -70,6 +81,13 @@ public class OAuthCallback {
 
         @Override
         public Callback<D, W> succeed(Consumer<D> data) {
+            return this;
+        }
+
+        @Override
+        public Callback<D, W> completed(Consumer<Response> response) {
+            response.accept(this.response);
+
             return this;
         }
 
@@ -91,7 +109,7 @@ public class OAuthCallback {
         }
     }
 
-    record Exception<D, W>(String token, Throwable throwable) implements Callback<D, W> {
+    record Exception<D, W>(String token, Throwable throwable, Response response) implements Callback<D, W> {
         @Override
         public D data() {
             return null;
@@ -104,6 +122,11 @@ public class OAuthCallback {
 
         @Override
         public Callback<D, W> succeed(Consumer<D> data) {
+            return this;
+        }
+
+        @Override
+        public Callback<D, W> completed(Consumer<Response> response) {
             return this;
         }
 

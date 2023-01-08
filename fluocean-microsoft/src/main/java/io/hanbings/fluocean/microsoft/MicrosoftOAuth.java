@@ -79,7 +79,7 @@ public class MicrosoftOAuth
                     .get()
                     .object(MicrosoftAccess.class, response.raw());
 
-            return OAuthCallback.response(access.accessToken(), access, null);
+            return OAuthCallback.response(access.accessToken(), access, null, response);
 
         }
 
@@ -88,7 +88,7 @@ public class MicrosoftOAuth
                     .get()
                     .object(MicrosoftAccess.Wrong.class, response.raw());
 
-            return OAuthCallback.response(null, null, wrong);
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return OAuthCallback.exception(
@@ -122,7 +122,7 @@ public class MicrosoftOAuth
                     .get()
                     .object(MicrosoftAccess.class, response.raw());
 
-            return OAuthCallback.response(access.accessToken(), access, null);
+            return OAuthCallback.response(access.accessToken(), access, null, response);
 
         }
 
@@ -131,7 +131,7 @@ public class MicrosoftOAuth
                     .get()
                     .object(MicrosoftAccess.Wrong.class, response.raw());
 
-            return OAuthCallback.response(null, null, wrong);
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return OAuthCallback.exception(

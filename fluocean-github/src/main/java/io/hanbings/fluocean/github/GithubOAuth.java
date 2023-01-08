@@ -54,13 +54,13 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                         .get()
                         .object(GithubAccess.class, response.raw());
 
-                return OAuthCallback.response(access.accessToken(), access, null);
+                return OAuthCallback.response(access.accessToken(), access, null, response);
             } else {
                 GithubAccess.Wrong wrong = this.serialization()
                         .get()
                         .object(GithubAccess.Wrong.class, response.raw());
 
-                return OAuthCallback.response(null, null, wrong);
+                return OAuthCallback.response(null, null, wrong, response);
             }
         }
 

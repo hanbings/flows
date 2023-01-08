@@ -7,11 +7,15 @@ public interface Callback<D, W> {
 
     W wrong();
 
+    Response response();
+
     String token();
 
     Throwable throwable();
 
     Callback<D, W> succeed(Consumer<D> data);
+
+    Callback<D, W> completed(Consumer<Response> response);
 
     Callback<D, W> fail(Consumer<W> wrong);
 

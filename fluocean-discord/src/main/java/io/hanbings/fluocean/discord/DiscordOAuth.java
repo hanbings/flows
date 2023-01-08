@@ -111,7 +111,7 @@ public class DiscordOAuth
                     .get()
                     .object(DiscordAccess.class, response.raw());
 
-            return OAuthCallback.response(access.accessToken(), access, null);
+            return OAuthCallback.response(access.accessToken(), access, null, response);
 
         }
 
@@ -120,7 +120,7 @@ public class DiscordOAuth
                     .get()
                     .object(DiscordAccess.Wrong.class, response.raw());
 
-            return OAuthCallback.response(null, null, wrong);
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return OAuthCallback.exception(
@@ -154,7 +154,7 @@ public class DiscordOAuth
                     .get()
                     .object(DiscordAccess.class, response.raw());
 
-            return OAuthCallback.response(access.accessToken(), access, null);
+            return OAuthCallback.response(access.accessToken(), access, null, response);
 
         }
 
@@ -163,7 +163,7 @@ public class DiscordOAuth
                     .get()
                     .object(DiscordAccess.Wrong.class, response.raw());
 
-            return OAuthCallback.response(null, null, wrong);
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return OAuthCallback.exception(
@@ -196,7 +196,7 @@ public class DiscordOAuth
                     .get()
                     .object(DiscordRevoke.class, response.raw());
 
-            return OAuthCallback.response(null, access, null);
+            return OAuthCallback.response(null, access, null, response);
         }
 
         return OAuthCallback.exception(
