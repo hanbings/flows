@@ -126,7 +126,7 @@ Q：这是一个计划用于生产环境，长期维护和对社区友善且开�
 
 **F：为什么使用 JDK 17 而不是 JDK 11 甚至是 JDK 8？**
 
-Q：JDK 17 是一个 LTS （long-term support）版本，它拥有长达十年的支持时间。JDK 17 中拥有的特性例如 Record 和 Switch 模式匹配，它们都可以有效提高开发者效率。许多框架已经开始迁移到新版本的 JDK17，例如 [Spring Framework 6](https://spring.io/blog/2021/09/02/a-java-17-and-jakarta-ee-9-baseline-for-spring-framework-6) 和 [Spring Boot 3](https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0)，自这些框架新版本发布后的新项目将会基于 JDK17，开发者已经没有什么理由不使用新版本了。另外，基于旧版本 JDK 的项目在完成初期开发后换用组件的几率很小，对于旧版本 JDK 的支持所带来的收益是小于成本的。
+Q：JDK 17 是一个 LTS （long-term support）版本，它拥有长达十年的支持时间。JDK 17 中拥有的特性例如 Record 和 Switch 模式匹配，它们都可以有效提高开发者效率。许多框架已经开始迁移到新版本的 JDK17，例如 [Spring Framework 6](https://spring.io/blog/2021/09/02/a-java-17-and-jakarta-ee-9-baseline-for-spring-framework-6) 和 [Spring Boot 3](https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0)，开发者已经没有什么理由不使用新版本 JDK 了。另外，基于旧版本 JDK 的项目在完成初期开发后换用组件的几率很小，对于旧版本 JDK 的支持所带来的收益是小于成本的。
 
 **F：商业计划？**
 
@@ -138,6 +138,10 @@ Q：本项目基于 Apache 2.0 许可证，项目本身完全是免费开源的�
 本项目使用 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) 许可协议进行开源。
 
 本项目是**非盈利性**项目。
+
+依据协议，本项目**允许**遵守协议的前提下基于本项目开发的项目**进行商用**，但需要注意的是，本项目中的图片（包括 Readme.md 文件中所展示的吉祥物小鱼洋流和可能出现的其他图片）**不属于开源的范围** 它们属于开发者 [寒冰 hanbings](https://github.com/hanbings) 个人所有，~~是寒冰的崽子~~，请在复制、修改本项目时**移除它们**。
+
+**版权警告：吉祥物小鱼洋流图片中所使用 Fluocean 字样字体为商业需授权字体 Snap ITC**
 
 ## 🍀 关于开源
 
