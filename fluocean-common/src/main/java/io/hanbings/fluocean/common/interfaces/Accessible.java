@@ -3,8 +3,7 @@ package io.hanbings.fluocean.common.interfaces;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("SpellCheckingInspection")
-public interface Authable<D, W> {
+public interface Accessible<D extends Access, W extends Access.Wrong> {
     String authorize();
 
     String authorize(List<String> scopes);

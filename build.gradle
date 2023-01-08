@@ -108,6 +108,9 @@ dependencies {
 
                         // https://mvnrepository.com/artifact/com.google.code.gson/gson
                         implementation 'com.google.code.gson:gson:2.10'
+
+                        // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+                        implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.1")
                     }
                 }
             }

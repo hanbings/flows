@@ -1,6 +1,7 @@
 package io.hanbings.fluocean.google;
 
 import com.google.gson.annotations.SerializedName;
+import io.hanbings.fluocean.common.interfaces.Access;
 
 public record GoogleAccess(
         @SerializedName("access_token")
@@ -13,12 +14,12 @@ public record GoogleAccess(
         String scope,
         @SerializedName("token_type")
         String tokenType
-) {
+) implements Access {
     record Wrong(
             @SerializedName("error")
             String error,
             @SerializedName("error_description")
             String errorDescription
-    ) {
+    ) implements Access.Wrong {
     }
 }

@@ -2,6 +2,7 @@ package io.hanbings.fluocean.github;
 
 
 import com.google.gson.annotations.SerializedName;
+import io.hanbings.fluocean.common.interfaces.Access;
 
 public record GithubAccess(
         @SerializedName("access_token")
@@ -10,7 +11,7 @@ public record GithubAccess(
         String tokenType,
         @SerializedName("scope")
         String scope
-) {
+) implements Access {
     record Wrong(
             @SerializedName("error_uri")
             String errorUri,
@@ -18,6 +19,6 @@ public record GithubAccess(
             String error,
             @SerializedName("error_description")
             String errorDescription
-    ) {
+    ) implements Access.Wrong {
     }
 }

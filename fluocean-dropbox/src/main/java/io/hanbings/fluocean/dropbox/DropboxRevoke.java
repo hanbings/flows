@@ -1,6 +1,8 @@
 package io.hanbings.fluocean.dropbox;
 
-public record DropboxRevoke() {
-    record Wrong() {
+import io.hanbings.fluocean.common.interfaces.Revoke;
+
+public record DropboxRevoke() implements Revoke {
+    record Wrong() implements Revoke.Wrong {
     }
 }

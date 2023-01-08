@@ -1,6 +1,8 @@
 package io.hanbings.fluocean.microsoft;
 
 import com.google.gson.annotations.SerializedName;
+import io.hanbings.fluocean.common.interfaces.Access;
+import io.hanbings.fluocean.common.interfaces.Refresh;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public record MicrosoftAccess(
         String refreshToken,
         @SerializedName("id_token")
         String idToken
-) {
+) implements Access, Refresh {
     record Wrong(
             @SerializedName("error")
             String error,
@@ -31,6 +33,6 @@ public record MicrosoftAccess(
             String traceId,
             @SerializedName("correlation_id")
             String correlationId
-    ) {
+    ) implements Access.Wrong, Refresh.Wrong {
     }
 }

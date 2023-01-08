@@ -29,7 +29,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
-public class OAuth<D, W> implements Authable<D, W> {
+public class OAuth<D extends Access, W extends Access.Wrong> implements Accessible<D, W> {
     final String authorization;
     final String access;
     String client;
