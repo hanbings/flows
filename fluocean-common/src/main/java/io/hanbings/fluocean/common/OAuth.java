@@ -2,7 +2,6 @@ package io.hanbings.fluocean.common;
 
 import io.hanbings.fluocean.common.function.Lazy;
 import io.hanbings.fluocean.common.interfaces.*;
-import io.hanbings.fluocean.common.utils.UrlUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -121,8 +120,8 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
         String state;
 
         try {
-            code = UrlUtils.params(url).get("code");
-            state = UrlUtils.params(url).get("state");
+            code = Accessible.Utils.params(url).get("code");
+            state = Accessible.Utils.params(url).get("state");
         } catch (URISyntaxException e) {
             return OAuthCallback.exception(null, e);
         }
