@@ -37,7 +37,8 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
 
     Supplier<Request.Proxy> proxy = null;
     Lazy<Request> request = Lazy.of(
-            () -> proxy == null ? new OAuthRequest() : new OAuthRequest(proxy.get()));
+            () -> proxy == null ? new OAuthRequest() : new OAuthRequest(proxy.get())
+    );
     Lazy<Serialization> serialization = Lazy.of(OAuthSerialization::new);
     Lazy<State> state = Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()));
 

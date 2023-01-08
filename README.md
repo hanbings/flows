@@ -78,11 +78,13 @@ oauth.state(
 
 **更换 Http 客户端**
 
-默认使用 Okhttp 发起请求
+默认使用 `java.net.http` 的 HttpClient 发起请求，无需任何第三方依赖，在 `fluocean-extra` 中还有一个 Okhttp 的实现。
 
 ```java
 // 实现比较繁杂 就不展示啦 x
-oauth.request(Lazy.of(OAuthRequest::new));
+oauth.request(
+    Lazy.of(() -> proxy == null ? new OAuthRequest() : new OAuthRequest(proxy.get()))
+);
 ```
 
 **更换 Json 解析器**
