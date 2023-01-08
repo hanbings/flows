@@ -24,4 +24,5 @@ include 'fluocean-ebay'
 include 'fluocean-dropbox'
 include 'fluocean-amazon'
 include 'fluocean-etsy'
+include 'fluocean-extra'
 

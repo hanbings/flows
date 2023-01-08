@@ -118,6 +118,20 @@ oauth.serialization(
 
 *稍后补充*
 
+## 🍉 一些小事情
+
+**F：这是一个什么样的项目？**
+
+Q：这是一个计划用于生产环境，长期维护和对社区友善且开放的个人项目。
+
+**F：为什么使用 JDK 17 而不是 JDK 11 甚至是 JDK 8？**
+
+Q：JDK 17 是一个 LTS （long-term support）版本，它拥有长达十年的支持时间。JDK 17 中拥有的特性例如 Record 和 Switch 模式匹配，它们都可以有效提高开发者效率。许多框架已经开始迁移到新版本的 JDK17，例如 [Spring Framework 6](https://spring.io/blog/2021/09/02/a-java-17-and-jakarta-ee-9-baseline-for-spring-framework-6) 和 [Spring Boot 3](https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0)，自这些框架新版本发布后的新项目将会基于 JDK17，开发者已经没有什么理由不使用新版本了。另外，基于旧版本 JDK 的项目在完成初期开发后换用组件的几率很小，对于旧版本 JDK 的支持所带来的收益是小于成本的。
+
+**F：商业计划？**
+
+Q：本项目基于 Apache 2.0 许可证，项目本身完全是免费开源的，同样的，项目依赖库也将选择可商用开源许可的开源项目，使用本项目开发的独立项目可用于商业用途，请阅读 `开源许可` 部分。
+
 
 ## ⚖ 开源许可
 
