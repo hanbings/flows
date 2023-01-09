@@ -2,13 +2,19 @@ package io.hanbings.fluocean.github;
 
 import io.hanbings.fluocean.common.OAuth;
 import io.hanbings.fluocean.common.OAuthCallback;
-import io.hanbings.fluocean.common.interfaces.Callback;
-import io.hanbings.fluocean.common.interfaces.Response;
+import io.hanbings.fluocean.common.interfaces.*;
 
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
+public class GithubOAuth
+        extends
+        OAuth<GithubAccess, GithubAccess.Wrong>
+        implements
+        Profilable<GithubProfile, GithubProfile.Wrong>,
+        Identifiable<Identify, Identify.Wrong> {
+    final String identification = "https://api.github.com/user";
+
     private GithubOAuth() {
         super(
                 "https://github.com/login/oauth/authorize",
@@ -68,5 +74,25 @@ public class GithubOAuth extends OAuth<GithubAccess, GithubAccess.Wrong> {
                 null,
                 response.exception() ? response.throwable() : new IllegalArgumentException()
         );
+    }
+
+    @Override
+    public Callback<GithubProfile, GithubProfile.Wrong> profile(String token) {
+        return null;
+    }
+
+    @Override
+    public Callback<GithubProfile, GithubProfile.Wrong> profile(String code, String state, String redirect) {
+        return null;
+    }
+
+    @Override
+    public Callback<Identify, Identify.Wrong> identify(String token) {
+        return null;
+    }
+
+    @Override
+    public Callback<Identify, Identify.Wrong> identify(String code, String state, String redirect) {
+        return null;
     }
 }

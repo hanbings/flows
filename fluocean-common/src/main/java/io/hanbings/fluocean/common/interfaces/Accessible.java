@@ -1,5 +1,7 @@
 package io.hanbings.fluocean.common.interfaces;
 
+import io.hanbings.fluocean.common.OAuthCallback;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -8,17 +10,37 @@ import java.util.List;
 import java.util.Map;
 
 public interface Accessible<D extends Access, W extends Access.Wrong> {
-    String authorize();
+    default String authorize() {
+        return authorize(List.of(), Map.of());
+    }
 
-    String authorize(List<String> scopes);
+    default String authorize(List<String> scopes) {
+        return authorize(scopes, Map.of());
+    }
 
-    String authorize(Map<String, String> params);
+    default String authorize(Map<String, String> params) {
+        return authorize(List.of(), params);
+    }
 
     String authorize(List<String> scopes, Map<String, String> params);
 
-    Callback<D, W> token(String url);
+    default Callback<D, W> token(String url) {
+        return token(url, null);
+    }
 
-    Callback<D, W> token(String url, String redirect);
+    default Callback<D, W> token(String url, String redirect) {
+        String code;
+        String state;
+
+        try {
+            code = Accessible.Utils.params(url).get("code");
+            state = Accessible.Utils.params(url).get("state");
+        } catch (URISyntaxException e) {
+            return OAuthCallback.exception(null, e);
+        }
+
+        return token(code, state, redirect);
+    }
 
     Callback<D, W> token(String code, String state, String redirect);
 

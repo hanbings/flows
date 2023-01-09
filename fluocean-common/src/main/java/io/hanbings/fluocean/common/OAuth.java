@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,21 +40,6 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
     );
     Lazy<Serialization> serialization = Lazy.of(OAuthSerialization::new);
     Lazy<State> state = Lazy.of(() -> new OAuthState(300, () -> UUID.randomUUID().toString()));
-
-    @Override
-    public String authorize() {
-        return authorize(List.of(), Map.of());
-    }
-
-    @Override
-    public String authorize(List<String> scopes) {
-        return authorize(scopes, Map.of());
-    }
-
-    @Override
-    public String authorize(Map<String, String> params) {
-        return authorize(List.of(), params);
-    }
 
     /**
      * 该方法默认添加 <br>
@@ -108,26 +92,6 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
         }
 
         return url.toString();
-    }
-
-    @Override
-    public Callback<D, W> token(String url) {
-        return token(url, null);
-    }
-
-    @Override
-    public Callback<D, W> token(String url, String redirect) {
-        String code;
-        String state;
-
-        try {
-            code = Accessible.Utils.params(url).get("code");
-            state = Accessible.Utils.params(url).get("state");
-        } catch (URISyntaxException e) {
-            return OAuthCallback.exception(null, e);
-        }
-
-        return token(code, state, redirect);
     }
 
     /**
