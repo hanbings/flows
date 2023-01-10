@@ -22,6 +22,13 @@ public record GithubIdentify(
         String email,
         String phone
 ) implements Identify {
-    record Wrong() implements Identify.Wrong {
+    record Wrong(
+            @JsonProperty("message")
+            @SerializedName("message")
+            String message,
+            @JsonProperty("documentation_url")
+            @SerializedName("documentation_url")
+            String documentationUrl
+    ) implements Identify.Wrong {
     }
 }

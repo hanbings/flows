@@ -103,6 +103,14 @@ public record GithubProfile(
         @SerializedName("node_id")
         String nodeId
 ) implements Profile {
-    record Wrong() implements Profile.Wrong {
+    record Wrong(
+            @JsonProperty("message")
+            @SerializedName("message")
+            String message,
+            @JsonProperty("documentation_url")
+            @SerializedName("documentation_url")
+            String documentationUrl
+    ) implements Profile.Wrong {
+
     }
 }
