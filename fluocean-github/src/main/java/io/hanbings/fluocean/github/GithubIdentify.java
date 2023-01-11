@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import io.hanbings.fluocean.common.interfaces.Identify;
 
+import java.util.List;
+
 public record GithubIdentify(
         @JsonProperty("id")
         @SerializedName("id")
@@ -30,5 +32,28 @@ public record GithubIdentify(
             @SerializedName("documentation_url")
             String documentationUrl
     ) implements Identify.Wrong {
+    }
+
+    record Emails(
+            List<Email> emails
+    ) {
+
+    }
+
+    record Email(
+            @JsonProperty("visibility")
+            @SerializedName("visibility")
+            String visibility,
+            @JsonProperty("verified")
+            @SerializedName("verified")
+            boolean verified,
+            @JsonProperty("email")
+            @SerializedName("email")
+            String email,
+            @JsonProperty("primary")
+            @SerializedName("primary")
+            boolean primary
+    ) {
+
     }
 }

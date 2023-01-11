@@ -2,7 +2,10 @@ package io.hanbings.fluocean.github;
 
 import io.hanbings.fluocean.common.OAuth;
 import io.hanbings.fluocean.common.OAuthCallback;
-import io.hanbings.fluocean.common.interfaces.*;
+import io.hanbings.fluocean.common.interfaces.Callback;
+import io.hanbings.fluocean.common.interfaces.Identifiable;
+import io.hanbings.fluocean.common.interfaces.Profilable;
+import io.hanbings.fluocean.common.interfaces.Response;
 
 import java.util.Map;
 
@@ -12,9 +15,7 @@ public class GithubOAuth
         OAuth<GithubAccess, GithubAccess.Wrong>
         implements
         Profilable<GithubProfile, GithubProfile.Wrong>,
-        Identifiable<Identify, Identify.Wrong> {
-    final String identification = "https://api.github.com/user";
-
+        Identifiable<GithubIdentify, GithubIdentify.Wrong> {
     private GithubOAuth() {
         super(
                 "https://github.com/login/oauth/authorize",
@@ -81,8 +82,8 @@ public class GithubOAuth
                 .get()
                 .get(
                         this.serialization().get(),
-                        this.proxy().get(),
-                        this.identification,
+                        this.proxy() == null ? null : this.proxy().get(),
+                        "https://api.github.com/user",
                         Map.of(),
                         Map.of(
                                 "Accept", "application/vnd.github+json",
@@ -92,19 +93,21 @@ public class GithubOAuth
                 );
 
         if (response.code() == 200) {
-            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("id")) {
-                GithubProfile profile = this.serialization()
-                        .get()
-                        .object(GithubProfile.class, response.raw());
 
-                return OAuthCallback.response(token, profile, null, response);
-            } else {
-                GithubProfile.Wrong wrong = this.serialization()
-                        .get()
-                        .object(GithubProfile.Wrong.class, response.raw());
+            GithubProfile profile = this.serialization()
+                    .get()
+                    .object(GithubProfile.class, response.raw());
 
-                return OAuthCallback.response(null, null, wrong, response);
-            }
+            return OAuthCallback.response(token, profile, null, response);
+
+        }
+
+        if (response.code() == 401) {
+            GithubProfile.Wrong wrong = this.serialization()
+                    .get()
+                    .object(GithubProfile.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong, response);
         }
 
         return response.exception() ?
@@ -113,34 +116,57 @@ public class GithubOAuth
     }
 
     @Override
-    public Callback<GithubProfile, GithubProfile.Wrong> profile(String code, String state, String redirect) {
-        Callback<GithubAccess, GithubAccess.Wrong> callback = token(code, state, redirect);
+    public Callback<GithubIdentify, GithubIdentify.Wrong> identify(String token) {
+        // headers
+        Map<String, String> headers = Map.of(
+                "Accept", "application/vnd.github+json",
+                "Authorization", String.format("Bearer %s", token),
+                "X-GitHub-Api-Version", "2022-11-28"
+        );
+        // profile
+        Response profiles = request()
+                .get()
+                .get(
+                        serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        "https://api.github.com/user",
+                        Map.of(),
+                        headers
+                );
+        // email
+        Response emails = request()
+                .get()
+                .get(
+                        serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        "https://api.github.com/user/emails",
+                        Map.of(),
+                        headers
+                );
+        // serialize
+        if (profiles.code() == 200 && (emails.code() == 200 || emails.code() == 404)) {
+            // serialize email
+            GithubIdentify.Emails email = this.serialization().get().object(GithubIdentify.Emails.class, emails.raw());
+            GithubProfile profile = this.serialization().get().object(GithubProfile.class, profiles.raw());
 
-        if (callback.success()) {
-            return profile(callback.data().accessToken());
+            GithubIdentify identify = new GithubIdentify(
+                    String.valueOf(profile.id()),
+                    profile.avatarUrl(),
+                    profile.login(),
+                    profile.name(),
+                    email.emails() == null ? null : (email.emails().size() == 0 ? null : email.emails().get(0).email()),
+                    null
+            );
+
+            return OAuthCallback.response(token, identify, null, profiles);
         }
 
-        return callback.throwable() == null ?
-                OAuthCallback.exception(null, callback.throwable()) :
-                OAuthCallback.response(callback.response());
-    }
-
-    @Override
-    public Callback<Identify, Identify.Wrong> identify(String token) {
-
-        return null;
-    }
-
-    @Override
-    public Callback<Identify, Identify.Wrong> identify(String code, String state, String redirect) {
-        Callback<GithubAccess, GithubAccess.Wrong> callback = token(code, state, redirect);
-
-        if (callback.success()) {
-            return identify(callback.data().accessToken());
-        }
-
-        return callback.throwable() == null ?
-                OAuthCallback.exception(null, callback.throwable()) :
-                OAuthCallback.response(callback.response());
+        return (profiles.exception() || emails.exception()) ?
+                profiles.exception() ?
+                        OAuthCallback.exception(token, profiles.throwable()) :
+                        OAuthCallback.exception(token, emails.throwable()) :
+                profiles.code() == 200 ?
+                        OAuthCallback.response(profiles) :
+                        OAuthCallback.response(emails);
     }
 }
