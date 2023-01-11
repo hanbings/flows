@@ -70,29 +70,77 @@ public class GithubOAuth
             }
         }
 
-        return OAuthCallback.exception(
-                null,
-                response.exception() ? response.throwable() : new IllegalArgumentException()
-        );
+        return response.exception() ?
+                OAuthCallback.exception(null, response.throwable()) :
+                OAuthCallback.response(response);
     }
 
     @Override
     public Callback<GithubProfile, GithubProfile.Wrong> profile(String token) {
-        return null;
+        Response response = request()
+                .get()
+                .get(
+                        this.serialization().get(),
+                        this.proxy().get(),
+                        this.identification,
+                        Map.of(),
+                        Map.of(
+                                "Accept", "application/vnd.github+json",
+                                "Authorization", String.format("Bearer %s", token),
+                                "X-GitHub-Api-Version", "2022-11-28"
+                        )
+                );
+
+        if (response.code() == 200) {
+            if (serialization().get().map(String.class, String.class, response.raw()).containsKey("id")) {
+                GithubProfile profile = this.serialization()
+                        .get()
+                        .object(GithubProfile.class, response.raw());
+
+                return OAuthCallback.response(token, profile, null, response);
+            } else {
+                GithubProfile.Wrong wrong = this.serialization()
+                        .get()
+                        .object(GithubProfile.Wrong.class, response.raw());
+
+                return OAuthCallback.response(null, null, wrong, response);
+            }
+        }
+
+        return response.exception() ?
+                OAuthCallback.exception(null, response.throwable()) :
+                OAuthCallback.response(response);
     }
 
     @Override
     public Callback<GithubProfile, GithubProfile.Wrong> profile(String code, String state, String redirect) {
-        return null;
+        Callback<GithubAccess, GithubAccess.Wrong> callback = token(code, state, redirect);
+
+        if (callback.success()) {
+            return profile(callback.data().accessToken());
+        }
+
+        return callback.throwable() == null ?
+                OAuthCallback.exception(null, callback.throwable()) :
+                OAuthCallback.response(callback.response());
     }
 
     @Override
     public Callback<Identify, Identify.Wrong> identify(String token) {
+
         return null;
     }
 
     @Override
     public Callback<Identify, Identify.Wrong> identify(String code, String state, String redirect) {
-        return null;
+        Callback<GithubAccess, GithubAccess.Wrong> callback = token(code, state, redirect);
+
+        if (callback.success()) {
+            return identify(callback.data().accessToken());
+        }
+
+        return callback.throwable() == null ?
+                OAuthCallback.exception(null, callback.throwable()) :
+                OAuthCallback.response(callback.response());
     }
 }

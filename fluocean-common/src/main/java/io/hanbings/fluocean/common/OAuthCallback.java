@@ -11,6 +11,10 @@ public class OAuthCallback {
     private OAuthCallback() {
     }
 
+    public static <D, W> Callback<D, W> response(@NotNull Response response) {
+        return new OAuthCallback.Complete<>(response);
+    }
+
     public static <D, W> Callback<D, W> response(
             String token, @Nullable D data, @Nullable W wrong, @NotNull Response response
     ) {
@@ -24,6 +28,55 @@ public class OAuthCallback {
 
     public static <D, W> Callback<D, W> exception(String token, Throwable throwable) {
         return new OAuthCallback.Exception<>(token, throwable, null);
+    }
+
+    record Complete<D, W>(Response response) implements Callback<D, W> {
+        @Override
+        public D data() {
+            return null;
+        }
+
+        @Override
+        public W wrong() {
+            return null;
+        }
+
+        @Override
+        public String token() {
+            return null;
+        }
+
+        @Override
+        public Throwable throwable() {
+            return null;
+        }
+
+        @Override
+        public Callback<D, W> succeed(Consumer<D> data) {
+            return this;
+        }
+
+        @Override
+        public Callback<D, W> completed(Consumer<Response> response) {
+            response.accept(this.response);
+
+            return this;
+        }
+
+        @Override
+        public Callback<D, W> fail(Consumer<W> wrong) {
+            return this;
+        }
+
+        @Override
+        public Callback<D, W> except(Consumer<Throwable> throwable) {
+            return this;
+        }
+
+        @Override
+        public boolean success() {
+            return false;
+        }
     }
 
     record Success<D, W>(String token, D data, Response response) implements Callback<D, W> {
