@@ -1,4 +1,4 @@
-name: FluOcean Publish
+name: Flows Publish
 
 on:
   push:

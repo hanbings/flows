@@ -2,7 +2,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
-    group = 'io.hanbings.fluocean'
+    group = 'io.hanbings.flows'
     version = '0.0.1-SNAPSHOT'
 
     repositories {
@@ -99,12 +99,12 @@ task collect(type: Copy) {
 dependencies {
     subprojects.each {p -> implementation create(p) }
     subprojects.stream()
-            .filter(p -> p.name != "fluocean-common")
+            .filter(p -> p.name != "flows-common")
             .each {p ->
                 {
                     p.dependencies {
                         // common
-                        implementation project(":fluocean-common")
+                        implementation project(":flows-common")
 
                         // https://mvnrepository.com/artifact/com.google.code.gson/gson
                         implementation 'com.google.code.gson:gson:2.10'

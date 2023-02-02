@@ -1,4 +1,4 @@
-name: FluOcean Build
+name: Flows Build
 
 on:
   push:
