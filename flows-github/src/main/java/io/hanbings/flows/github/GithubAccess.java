@@ -16,7 +16,7 @@ public record GithubAccess(
         @SerializedName("scope")
         String scope
 ) implements Access {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("error_uri")
             @SerializedName("error_uri")
             String errorUri,

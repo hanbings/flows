@@ -15,7 +15,7 @@ public record DropboxRefresh(
         @SerializedName("token_type")
         String tokenType
 ) implements Refresh {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("error")
             @SerializedName("error")
             String error,

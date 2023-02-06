@@ -103,7 +103,7 @@ public record GithubProfile(
         @SerializedName("node_id")
         String nodeId
 ) implements Profile {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("message")
             @SerializedName("message")
             String message,

@@ -33,7 +33,7 @@ public record DropboxAccess(
         @SerializedName("uid")
         String uid
 ) implements Access {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("error")
             @SerializedName("error")
             String error,

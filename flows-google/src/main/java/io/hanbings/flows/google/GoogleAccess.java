@@ -21,7 +21,7 @@ public record GoogleAccess(
         @SerializedName("token_type")
         String tokenType
 ) implements Access {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("error")
             @SerializedName("error")
             String error,

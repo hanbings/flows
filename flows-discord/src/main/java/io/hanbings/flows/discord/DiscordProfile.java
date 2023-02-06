@@ -38,7 +38,7 @@ public record DiscordProfile(
         @SerializedName("discriminator")
         String discriminator
 ) {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("code")
             @SerializedName("code")
             int code,

@@ -22,7 +22,7 @@ public record DiscordAccess(
         @SerializedName("scope")
         String scope
 ) implements Access, Refresh {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("error")
             @SerializedName("error")
             String error

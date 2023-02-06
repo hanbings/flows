@@ -27,7 +27,7 @@ public record MicrosoftAccess(
         @SerializedName("id_token")
         String idToken
 ) implements Access, Refresh {
-    record Wrong(
+    public record Wrong(
             @JsonProperty("error")
             @SerializedName("error")
             String error,

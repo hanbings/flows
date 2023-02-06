@@ -7,7 +7,7 @@ public record FacebookAccess(
         @SerializedName("access_token")
         String accessToken
 ) implements Access {
-    record Wrong(
+    public record Wrong(
             @SerializedName("error")
             String error
     ) implements Access.Wrong {
