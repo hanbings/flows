@@ -53,11 +53,6 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
      * <p>开发者注意事项：</p>
      * 实现该方法时需要注意 null 的参数传入 <br>
      * 传入 null 时使用 this.scopes 和 this.params 获取默认的 scopes 和 params <br>
-     * 如下代码：
-     * <code>
-     * List<String> sco = scopes == null ? this.scopes() : scopes;
-     * Map<String, String> par = params == null ? this.params() : params;
-     * </code>
      *
      * @param scopes 构造 OAuth 请求范围 传入 null 时将会使用构造方法传入的默认 scopes
      * @param params 构造 authorize url 的参数 传入 null 时将会使用构造方法传入的默认 params
