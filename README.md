@@ -1,6 +1,6 @@
-![Fluocean](https://picture.hanbings.com/2023/01/06/db6ea1fb54490.png)
+![Flows](https://picture.hanbings.io/2023/02/07/dbd60957f0391.png)
 
-<h1 align="center">🌊 Fluocean</h1>
+<h1 align="center">🌊 Flows</h1>
 <h5 align="center">海纳百川 有容乃大！</h5>
 
 ## 🍀 这是什么？
@@ -78,7 +78,7 @@ oauth.state(
 
 **更换 Http 客户端**
 
-默认使用 `java.net.http` 的 HttpClient 发起请求，无需任何第三方依赖，在 `fluocean-extra` 中还有一个 Okhttp 的实现
+默认使用 `java.net.http` 的 HttpClient 发起请求，无需任何第三方依赖，在 `flows-extra` 中还有一个 Okhttp 的实现
 
 ```java
 // 实现比较繁杂 就不展示啦 x
@@ -147,7 +147,7 @@ Q：本项目基于 Apache 2.0 许可证，项目本身完全是免费开源的�
 
 依据协议，本项目**允许**遵守协议的前提下基于本项目开发的项目**进行商用**，但需要注意的是，本项目中的图片（包括 Readme.md 文件中所展示的吉祥物小鱼洋流和可能出现的其他图片）**不属于开源的范围** 它们属于开发者 [寒冰 hanbings](https://github.com/hanbings) 个人所有，~~是寒冰的崽子~~，请在复制、修改本项目时**移除它们**。
 
-**版权警告：吉祥物小鱼洋流图片中所使用 Fluocean 字样字体为商业需授权字体 Snap ITC**
+**版权警告：吉祥物小鱼洋流图片中所使用 Flows 字样字体为商业需授权字体 Snap ITC**
 
 ## 🍀 关于开源
 
