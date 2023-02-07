@@ -8,6 +8,7 @@ package io.hanbings.flows.common.interfaces;
 public interface Access {
     /**
      * 权限凭据
+     *
      * @return 字符串类型凭据
      */
     String accessToken();
@@ -18,6 +19,7 @@ public interface Access {
     interface Wrong {
         /**
          * 错误的详细信息
+         *
          * @return 错误信息
          */
         String error();

@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * 用于描述可 OAuth 授权的提供商
+ *
  * @param <D> Data 继承 Access 接口的数据模型
  * @param <W> Wrong 继承 Access.Wrong 接口的错误信息模型
  */
@@ -18,6 +19,7 @@ import java.util.Map;
 public interface Accessible<D extends Access, W extends Access.Wrong> {
     /**
      * 生成授权 url
+     *
      * @return 字符串 url
      */
     default String authorize() {
@@ -26,6 +28,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
 
     /**
      * 指定 Scope 生成授权 url
+     *
      * @param scopes 指定的 Scope 列表
      * @return 字符串 url
      */
@@ -35,6 +38,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
 
     /**
      * 指定 query 参数生成授权 url
+     *
      * @param params 指定的 http query 参数
      * @return 字符串 url
      */
@@ -44,6 +48,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
 
     /**
      * 指定 Scope 和 query 参数生成授权 url
+     *
      * @param scopes 指定的 Scope 列表
      * @param params 指定的 http query 参数
      * @return 字符串 url
@@ -52,6 +57,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
 
     /**
      * code 换 token 执行授权码模式流程
+     *
      * @param url callback 返回的完整 url 将自动解析
      * @return Callback 数据
      */
@@ -61,7 +67,8 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
 
     /**
      * code 换 token 执行授权码模式流程
-     * @param url callback 返回的完整 url 将自动解析
+     *
+     * @param url      callback 返回的完整 url 将自动解析
      * @param redirect 回调数据被传送到的地址 需要在提供商处注册该域
      * @return Callback 数据
      */
@@ -81,8 +88,9 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
 
     /**
      * 使用授权码获取 token
-     * @param code 授权码
-     * @param state state 码
+     *
+     * @param code     授权码
+     * @param state    state 码
      * @param redirect 回调地址
      * @return Callback 数据
      */
