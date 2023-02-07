@@ -17,16 +17,15 @@ public class MicrosoftOAuth
         implements
         Refreshable<MicrosoftAccess, MicrosoftAccess.Wrong> {
     private MicrosoftOAuth() {
-        super(
-                "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-                "https://login.microsoftonline.com/common/oauth2/v2.0/token"
-        );
+        super(null, null, null, null);
     }
 
     public MicrosoftOAuth(String client, String secret, String redirect) {
         super(
                 "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-                "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+                "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                List.of(),
+                Map.of()
         );
 
         this.client(client);
@@ -34,8 +33,10 @@ public class MicrosoftOAuth
         this.redirect(redirect);
     }
 
-    public MicrosoftOAuth(String authorization, String access, String client, String secret, String redirect) {
-        super(authorization, access);
+    public MicrosoftOAuth(String authorization, String access,
+                          String client, String secret, String redirect,
+                          List<String> scopes, Map<String, String> params) {
+        super(authorization, access, scopes, params);
 
         this.client(client);
         this.secret(secret);
@@ -45,7 +46,7 @@ public class MicrosoftOAuth
     @Override
     public String authorize(List<String> scopes, Map<String, String> params) {
         return super.authorize(
-                scopes.size() > 0 ? scopes : List.of("openid"),
+                scopes == null ? List.of("openid") : scopes,
                 new HashMap<>() {{
                     putAll(params);
                     put("response_type", "code");

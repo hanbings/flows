@@ -23,16 +23,29 @@ public class DropboxOAuth
     final String revocation = "https://api.dropboxapi.com/2/auth/token/revoke";
 
     private DropboxOAuth() {
-        super(
-                "https://www.dropbox.com/oauth2/authorize",
-                "https://api.dropboxapi.com/oauth2/token"
-        );
+        super(null, null, null, null);
     }
 
     public DropboxOAuth(String client, String secret, String redirect) {
         super(
                 "https://www.dropbox.com/oauth2/authorize",
-                "https://api.dropboxapi.com/oauth2/token"
+                "https://api.dropboxapi.com/oauth2/token",
+                List.of(),
+                Map.of()
+        );
+
+        this.client(client);
+        this.secret(secret);
+        this.redirect(redirect);
+    }
+
+    public DropboxOAuth(String client, String secret, String redirect,
+                        List<String> scopes, Map<String, String> params) {
+        super(
+                "https://www.dropbox.com/oauth2/authorize",
+                "https://api.dropboxapi.com/oauth2/token",
+                scopes,
+                params
         );
 
         this.client(client);

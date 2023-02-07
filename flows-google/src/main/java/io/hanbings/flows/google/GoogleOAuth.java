@@ -12,16 +12,29 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class GoogleOAuth extends OAuth<GoogleAccess, GoogleAccess.Wrong> {
     private GoogleOAuth() {
-        super(
-                "https://accounts.google.com/o/oauth2/v2/auth",
-                "https://oauth2.googleapis.com/token"
-        );
+        super(null, null, null, null);
     }
 
     public GoogleOAuth(String client, String secret, String redirect) {
         super(
                 "https://accounts.google.com/o/oauth2/v2/auth",
-                "https://oauth2.googleapis.com/token"
+                "https://oauth2.googleapis.com/token",
+                List.of(),
+                Map.of()
+        );
+
+        this.client(client);
+        this.secret(secret);
+        this.redirect(redirect);
+    }
+
+    public GoogleOAuth(String client, String secret, String redirect,
+                       List<String> scopes, Map<String, String> params) {
+        super(
+                "https://accounts.google.com/o/oauth2/v2/auth",
+                "https://oauth2.googleapis.com/token",
+                scopes,
+                params
         );
 
         this.client(client);
@@ -32,7 +45,7 @@ public class GoogleOAuth extends OAuth<GoogleAccess, GoogleAccess.Wrong> {
     @Override
     public String authorize(List<String> scopes, Map<String, String> params) {
         return super.authorize(
-                scopes.size() > 0 ? scopes : List.of("openid"),
+                scopes == null ? List.of("openid") : scopes,
                 new HashMap<>() {{
                     putAll(params);
                     put("response_type", "code");

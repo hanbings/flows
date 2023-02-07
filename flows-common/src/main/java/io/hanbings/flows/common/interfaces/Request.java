@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public interface Request {
     Response get(Serialization serialization, Proxy proxy, String url);
 

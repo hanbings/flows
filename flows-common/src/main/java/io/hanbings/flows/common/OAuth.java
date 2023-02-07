@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,8 @@ import java.util.stream.IntStream;
 public class OAuth<D extends Access, W extends Access.Wrong> implements Accessible<D, W> {
     final String authorization;
     final String access;
+    final List<String> scopes;
+    final Map<String, String> params;
     String client;
     String secret;
     String redirect;
@@ -46,28 +49,39 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
      * 1. client_id OAuth 服务商提供的 Client ID <br>
      * 2. redirect_uri 在 OAuth 服务商设置回调 url <br>
      * 3. state 自动生成和判断的安全凭据 <br>
-     * 在 scope 默认的分隔符是 %20 即空格的 http encode
+     * 在 scope 默认的分隔符是 %20 即空格的 http encode <br>
+     * <p>开发者注意事项：</p>
+     * 实现该方法时需要注意 null 的参数传入 <br>
+     * 传入 null 时使用 this.scopes 和 this.params 获取默认的 scopes 和 params <br>
+     * 如下代码：
+     * <code>
+     * List<String> sco = scopes == null ? this.scopes() : scopes;
+     * Map<String, String> par = params == null ? this.params() : params;
+     * </code>
      *
-     * @param scopes 构造 OAuth 请求范围
-     * @param params 构造 authorize url 的参数
+     * @param scopes 构造 OAuth 请求范围 传入 null 时将会使用构造方法传入的默认 scopes
+     * @param params 构造 authorize url 的参数 传入 null 时将会使用构造方法传入的默认 params
      * @return 返回 authorize url
      */
     @Override
-    public String authorize(List<String> scopes, Map<String, String> params) {
+    public String authorize(@Nullable List<String> scopes, @Nullable Map<String, String> params) {
+        List<String> sco = scopes == null ? this.scopes() : scopes;
+        Map<String, String> par = params == null ? this.params() : params;
+
         Map<String, String> temp = new HashMap<>() {{
-            put("client_id", client);
-            put("redirect_uri", redirect);
-            put("state", state.get().add());
+            put("client_id", client());
+            put("redirect_uri", redirect());
+            put("state", state().get().add());
 
             // put scopes
             StringBuilder scope = new StringBuilder();
 
-            IntStream.range(0, scopes.size()).forEach(count -> {
+            IntStream.range(0, sco.size()).forEach(count -> {
                 if (count != 0) {
                     scope.append("%20");
                 }
 
-                scope.append(scopes.get(count));
+                scope.append(sco.get(count));
             });
 
             if (scope.length() != 0) {
@@ -75,7 +89,7 @@ public class OAuth<D extends Access, W extends Access.Wrong> implements Accessib
             }
 
             // merge map
-            putAll(params);
+            putAll(par);
         }};
 
         // url builder

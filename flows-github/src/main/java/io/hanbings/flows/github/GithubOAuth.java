@@ -7,6 +7,7 @@ import io.hanbings.flows.common.interfaces.Identifiable;
 import io.hanbings.flows.common.interfaces.Profilable;
 import io.hanbings.flows.common.interfaces.Response;
 
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
@@ -17,16 +18,29 @@ public class GithubOAuth
         Profilable<GithubProfile, GithubProfile.Wrong>,
         Identifiable<GithubIdentify, GithubIdentify.Wrong> {
     private GithubOAuth() {
-        super(
-                "https://github.com/login/oauth/authorize",
-                "https://github.com/login/oauth/access_token"
-        );
+        super(null, null, null, null);
     }
 
     public GithubOAuth(String client, String secret, String redirect) {
         super(
                 "https://github.com/login/oauth/authorize",
-                "https://github.com/login/oauth/access_token"
+                "https://github.com/login/oauth/access_token",
+                List.of(),
+                Map.of()
+        );
+
+        this.client(client);
+        this.secret(secret);
+        this.redirect(redirect);
+    }
+
+    public GithubOAuth(String client, String secret, String redirect,
+                       List<String> scopes, Map<String, String> params) {
+        super(
+                "https://github.com/login/oauth/authorize",
+                "https://github.com/login/oauth/access_token",
+                scopes,
+                params
         );
 
         this.client(client);

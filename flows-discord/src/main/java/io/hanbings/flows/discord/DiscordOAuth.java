@@ -23,16 +23,29 @@ public class DiscordOAuth
     final String revocation = "https://discord.com/api/oauth2/token/revoke";
 
     private DiscordOAuth() {
-        super(
-                "https://discord.com/oauth2/authorize",
-                "https://discord.com/api/oauth2/token"
-        );
+        super(null, null, null, null);
     }
 
     public DiscordOAuth(String client, String secret, String redirect) {
         super(
                 "https://discord.com/oauth2/authorize",
-                "https://discord.com/api/oauth2/token"
+                "https://discord.com/api/oauth2/token",
+                List.of(),
+                Map.of()
+        );
+
+        this.client(client);
+        this.secret(secret);
+        this.redirect(redirect);
+    }
+
+    public DiscordOAuth(String client, String secret, String redirect,
+                        List<String> scopes, Map<String, String> params) {
+        super(
+                "https://discord.com/oauth2/authorize",
+                "https://discord.com/api/oauth2/token",
+                scopes,
+                params
         );
 
         this.client(client);
@@ -42,6 +55,9 @@ public class DiscordOAuth
 
     @Override
     public String authorize(List<String> scopes, Map<String, String> params) {
+        List<String> sco = scopes == null ? this.scopes() : scopes;
+        Map<String, String> par = params == null ? this.params() : params;
+
         Map<String, String> temp = new HashMap<>() {{
             put("client_id", client());
             put("redirect_uri", redirect());
@@ -52,12 +68,12 @@ public class DiscordOAuth
             // put scopes
             StringBuilder scope = new StringBuilder();
 
-            IntStream.range(0, scopes.size()).forEach(count -> {
+            IntStream.range(0, sco.size()).forEach(count -> {
                 if (count != 0) {
                     scope.append("%20");
                 }
 
-                scope.append(scopes.get(count));
+                scope.append(sco.get(count));
             });
 
             if (scope.length() != 0) {
@@ -65,7 +81,7 @@ public class DiscordOAuth
             }
 
             // merge map
-            putAll(params);
+            putAll(par);
         }};
 
         // url builder

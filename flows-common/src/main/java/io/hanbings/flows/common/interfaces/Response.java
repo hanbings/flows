@@ -2,6 +2,7 @@ package io.hanbings.flows.common.interfaces;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public interface Response {
     boolean exception();
 

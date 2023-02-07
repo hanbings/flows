@@ -1,8 +1,8 @@
 package io.hanbings.flows.common;
 
-import io.hanbings.flows.common.interfaces.Serialization;
 import io.hanbings.flows.common.interfaces.Request;
 import io.hanbings.flows.common.interfaces.Response;
+import io.hanbings.flows.common.interfaces.Serialization;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;

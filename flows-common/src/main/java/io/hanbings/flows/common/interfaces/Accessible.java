@@ -9,17 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public interface Accessible<D extends Access, W extends Access.Wrong> {
     default String authorize() {
-        return authorize(List.of(), Map.of());
+        return authorize(null, null);
     }
 
     default String authorize(List<String> scopes) {
-        return authorize(scopes, Map.of());
+        return authorize(scopes, null);
     }
 
     default String authorize(Map<String, String> params) {
-        return authorize(List.of(), params);
+        return authorize(null, params);
     }
 
     String authorize(List<String> scopes, Map<String, String> params);

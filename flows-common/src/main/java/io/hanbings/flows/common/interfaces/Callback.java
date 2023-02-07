@@ -2,6 +2,7 @@ package io.hanbings.flows.common.interfaces;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public interface Callback<D, W> {
     D data();
 
