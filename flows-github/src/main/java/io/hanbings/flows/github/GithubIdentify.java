@@ -35,6 +35,7 @@ public record GithubIdentify(
     }
 
     public record Emails(
+            @SerializedName("emails")
             List<Email> emails
     ) {
 

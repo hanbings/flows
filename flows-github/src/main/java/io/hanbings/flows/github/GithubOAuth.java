@@ -1,12 +1,16 @@
 package io.hanbings.flows.github;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import io.hanbings.flows.common.OAuth;
 import io.hanbings.flows.common.OAuthCallback;
+import io.hanbings.flows.common.OAuthSerialization;
 import io.hanbings.flows.common.interfaces.Callback;
 import io.hanbings.flows.common.interfaces.Identifiable;
 import io.hanbings.flows.common.interfaces.Profilable;
 import io.hanbings.flows.common.interfaces.Response;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -151,7 +155,16 @@ public class GithubOAuth
         Response emails = request()
                 .get()
                 .get(
-                        serialization().get(),
+                        new OAuthSerialization() {
+                            @Override
+                            public <K, V> Map<K, V> map(Class<K> key, Class<V> value, String raw) {
+                                List<K> list = new Gson().fromJson(raw, new TypeToken<List<K>>() {
+                                }.getType());
+                                return new HashMap<>() {{
+                                    list.forEach(e -> put(e, null));
+                                }};
+                            }
+                        },
                         this.proxy() == null ? null : this.proxy().get(),
                         "https://api.github.com/user/emails",
                         Map.of(),
@@ -160,7 +173,11 @@ public class GithubOAuth
         // serialize
         if (profiles.code() == 200 && (emails.code() == 200 || emails.code() == 404)) {
             // serialize email
-            GithubIdentify.Emails email = this.serialization().get().object(GithubIdentify.Emails.class, emails.raw());
+            // todo: 换用 getAsJsonArray 解析多个 json 组成的 Json 数组
+            GithubIdentify.Emails email = this.serialization().get().object(
+                    GithubIdentify.Emails.class,
+                    "{\"emails\":" + emails.raw() + "}"
+            );
             GithubProfile profile = this.serialization().get().object(GithubProfile.class, profiles.raw());
 
             GithubIdentify identify = new GithubIdentify(
