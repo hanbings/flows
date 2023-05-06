@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TwitterOAuth extends OAuth<TwitterAccess, TwitterAccess.Wrong> {
-    public TwitterOAuth() {
+    private TwitterOAuth() {
         super(null, null, null, null);
     }
 

@@ -16,5 +16,40 @@
 
 package io.hanbings.flows.amazon;
 
-public class AmazonOAuth {
+import io.hanbings.flows.common.OAuth;
+
+import java.util.List;
+import java.util.Map;
+
+public class AmazonOAuth extends OAuth<AmazonAccess, AmazonAccess.Wrong> {
+    private AmazonOAuth() {
+        super(null, null, null, null);
+    }
+
+    public AmazonOAuth(String client, String secret, String redirect) {
+        super(
+                "https://www.amazon.com/ap/oa",
+                "https://api.amazon.com/auth/o2/token",
+                List.of(),
+                Map.of()
+        );
+
+        this.client(client);
+        this.secret(secret);
+        this.redirect(redirect);
+    }
+
+    public AmazonOAuth(String client, String secret, String redirect,
+                       List<String> scopes, Map<String, String> params) {
+        super(
+                "https://www.amazon.com/ap/oa",
+                "https://api.amazon.com/auth/o2/token",
+                scopes,
+                params
+        );
+
+        this.client(client);
+        this.secret(secret);
+        this.redirect(redirect);
+    }
 }

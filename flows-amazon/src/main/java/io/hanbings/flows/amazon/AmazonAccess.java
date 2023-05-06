@@ -16,5 +16,14 @@
 
 package io.hanbings.flows.amazon;
 
-public record AmazonAccess() {
+import io.hanbings.flows.common.interfaces.Access;
+
+public record AmazonAccess(
+        String accessToken
+) implements Access {
+    public record Wrong(
+            String error,
+            String errorDescription
+    ) implements Access.Wrong {
+    }
 }
