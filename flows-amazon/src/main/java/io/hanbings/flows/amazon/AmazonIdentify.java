@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-package io.hanbings.flows.dropbox;
+package io.hanbings.flows.amazon;
 
-import io.hanbings.flows.common.interfaces.Revoke;
-
-public record DropboxRevoke() implements Revoke {
-    public record Wrong() implements Revoke.Wrong {
-    }
+public record AmazonIdentify() {
 }
