@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package io.hanbings.flows.wordpress;
+package io.hanbings.flows.twitch;
 
 import io.hanbings.flows.common.OAuth;
 
 import java.util.List;
 import java.util.Map;
 
-public class WordpressOAuth extends OAuth<WordpressAccess, WordpressAccess.Wrong> {
-    private WordpressOAuth() {
+public class TwitchOAuth extends OAuth<TwitchAccess, TwitchAccess.Wrong> {
+    private TwitchOAuth() {
         super(null, null, null, null);
     }
 
-    public WordpressOAuth(String client, String secret, String redirect) {
+    public TwitchOAuth(String client, String secret, String redirect) {
         super(
-                "https://public-api.wordpress.com/oauth2/authorize",
-                "https://public-api.wordpress.com/oauth2/token",
+                "https://id.twitch.tv/oauth2/authorize",
+                "https://id.twitch.tv/oauth2/token",
                 List.of(),
                 Map.of()
         );
@@ -39,11 +39,11 @@ public class WordpressOAuth extends OAuth<WordpressAccess, WordpressAccess.Wrong
         this.redirect(redirect);
     }
 
-    public WordpressOAuth(String client, String secret, String redirect,
-                          List<String> scopes, Map<String, String> params) {
+    public TwitchOAuth(String client, String secret, String redirect,
+                       List<String> scopes, Map<String, String> params) {
         super(
-                "https://public-api.wordpress.com/oauth2/authorize",
-                "https://public-api.wordpress.com/oauth2/token",
+                "https://id.twitch.tv/oauth2/authorize",
+                "https://id.twitch.tv/oauth2/token",
                 scopes,
                 params
         );
