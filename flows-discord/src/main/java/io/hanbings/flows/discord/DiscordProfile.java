@@ -18,6 +18,7 @@ package io.hanbings.flows.discord;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
+import io.hanbings.flows.common.interfaces.Profile;
 
 public record DiscordProfile(
         @JsonProperty("premium_type")
@@ -26,9 +27,6 @@ public record DiscordProfile(
         @JsonProperty("accent_color")
         @SerializedName("accent_color")
         int accentColor,
-        @JsonProperty("verified")
-        @SerializedName("verified")
-        boolean verified,
         @JsonProperty("flags")
         @SerializedName("flags")
         int flags,
@@ -44,26 +42,38 @@ public record DiscordProfile(
         @JsonProperty("public_flags")
         @SerializedName("public_flags")
         int publicFlags,
-        @JsonProperty("email")
-        @SerializedName("email")
-        String email,
         @JsonProperty("username")
         @SerializedName("username")
         String username,
         @JsonProperty("discriminator")
         @SerializedName("discriminator")
-        String discriminator
-) {
+        String discriminator,
+        @JsonProperty("global_name")
+        @SerializedName("global_name")
+        String globalName,
+        @JsonProperty("display_name")
+        @SerializedName("display_name")
+        String displayName,
+        @JsonProperty("banner_color")
+        @SerializedName("banner_color")
+        String bannerColor,
+        @JsonProperty("locale")
+        @SerializedName("locale")
+        String locale,
+        @JsonProperty("mfa_enabled")
+        @SerializedName("mfa_enabled")
+        String mfaEnabled,
+        @JsonProperty("avatar_description")
+        @SerializedName("avatar_description")
+        String avatarDescription
+) implements Profile {
     public record Wrong(
             @JsonProperty("code")
             @SerializedName("code")
             int code,
-            @JsonProperty("errors")
-            @SerializedName("errors")
-            Object errors,
             @JsonProperty("message")
             @SerializedName("message")
             String message
-    ) {
+    ) implements Profile.Wrong {
     }
 }

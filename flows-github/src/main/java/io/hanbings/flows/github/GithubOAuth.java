@@ -208,12 +208,8 @@ public class GithubOAuth
             return OAuthCallback.response(token, identify, null, profiles);
         }
 
-        return (profiles.exception() || emails.exception()) ?
-                profiles.exception() ?
-                        OAuthCallback.exception(token, profiles.throwable()) :
-                        OAuthCallback.exception(token, emails.throwable()) :
-                profiles.code() == 200 ?
-                        OAuthCallback.response(profiles) :
-                        OAuthCallback.response(emails);
+        return (profiles.exception() || emails.exception())
+                ? profiles.exception() ? OAuthCallback.exception(token, profiles.throwable()) : OAuthCallback.exception(token, emails.throwable())
+                : profiles.code() == 200 ? OAuthCallback.response(profiles) : OAuthCallback.response(emails);
     }
 }

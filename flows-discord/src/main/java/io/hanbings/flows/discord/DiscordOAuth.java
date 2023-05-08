@@ -18,23 +18,31 @@ package io.hanbings.flows.discord;
 
 import io.hanbings.flows.common.OAuth;
 import io.hanbings.flows.common.OAuthCallback;
-import io.hanbings.flows.common.interfaces.Callback;
-import io.hanbings.flows.common.interfaces.Refreshable;
-import io.hanbings.flows.common.interfaces.Response;
-import io.hanbings.flows.common.interfaces.Revokable;
+import io.hanbings.flows.common.interfaces.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+/**
+ * Discord OAuth
+ * <a href="https://discord.com/developers/docs/topics/oauth2">Discord OAuth2</a>
+ * 默认的 scope 是 identify
+ * default scope is identify
+ * 警告： 使用 profile 至少需要 scope: identify 权限 使用 identify 至少需要 scope: identify email
+ * warning: profile need scope: identify permission at least identify need scope: identify email permission at least
+ * <a href="https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes">Discord Scopes</a>
+ */
 @SuppressWarnings("unused")
 public class DiscordOAuth
         extends
         OAuth<DiscordAccess, DiscordAccess.Wrong>
         implements
         Refreshable<DiscordAccess, DiscordAccess.Wrong>,
-        Revokable<DiscordRevoke, DiscordRevoke.Wrong> {
+        Revokable<DiscordRevoke, DiscordRevoke.Wrong>,
+        Profilable<DiscordProfile, DiscordProfile.Wrong>,
+        Identifiable<DiscordIdentify, DiscordIdentify.Wrong> {
     final String refreshment = "https://discord.com/api/oauth2/token";
     final String revocation = "https://discord.com/api/oauth2/token/revoke";
 
@@ -159,6 +167,89 @@ public class DiscordOAuth
                 null,
                 response.exception() ? response.throwable() : new IllegalArgumentException()
         );
+    }
+
+    @Override
+    public Callback<DiscordProfile, DiscordProfile.Wrong> profile(String token) {
+        Response response = request()
+                .get()
+                .get(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        "https://discord.com/api/users/@me",
+                        Map.of(),
+                        Map.of(
+                                "Authorization", String.format("Bearer %s", token)
+                        )
+                );
+
+        if (response.code() == 200) {
+
+            DiscordProfile profile = this.serialization()
+                    .get()
+                    .object(DiscordProfile.class, response.raw());
+
+            return OAuthCallback.response(token, profile, null, response);
+
+        }
+
+        if (response.code() == 400) {
+            DiscordProfile.Wrong wrong = this.serialization()
+                    .get()
+                    .object(DiscordProfile.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong, response);
+        }
+
+        return response.exception()
+                ? OAuthCallback.exception(null, response.throwable())
+                : OAuthCallback.response(response);
+
+    }
+
+    @Override
+    public Callback<DiscordIdentify, DiscordIdentify.Wrong> identify(String token) {
+        Response response = request()
+                .get()
+                .get(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        "https://discord.com/api/users/@me",
+                        Map.of(),
+                        Map.of(
+                                "Authorization", String.format("Bearer %s", token)
+                        )
+                );
+
+        if (response.code() == 200) {
+            DiscordProfile profile = this.serialization()
+                    .get()
+                    .object(DiscordProfile.class, response.raw());
+
+            DiscordIdentify identify = new DiscordIdentify(
+                    profile.id(),
+                    String.format("https://cdn.discordapp.com/avatars/%s/user_avatar.png", profile.id()),
+                    profile.username(),
+                    profile.discriminator(),
+                    serialization().get().map(String.class, String.class, response.raw()).getOrDefault("email", null),
+                    ""
+            );
+
+            return OAuthCallback.response(token, identify, null, response);
+
+        }
+
+        if (response.code() == 400) {
+            DiscordIdentify.Wrong wrong = this.serialization()
+                    .get()
+                    .object(DiscordIdentify.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong, response);
+        }
+
+        return response.exception()
+                ? OAuthCallback.exception(null, response.throwable())
+                : OAuthCallback.response(response);
     }
 
     @Override
