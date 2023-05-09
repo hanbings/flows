@@ -127,13 +127,11 @@ public class GithubOAuth
                 );
 
         if (response.code() == 200) {
-
             GithubProfile profile = this.serialization()
                     .get()
                     .object(GithubProfile.class, response.raw());
 
             return OAuthCallback.response(token, profile, null, response);
-
         }
 
         if (response.code() == 401) {
@@ -144,9 +142,9 @@ public class GithubOAuth
             return OAuthCallback.response(null, null, wrong, response);
         }
 
-        return response.exception() ?
-                OAuthCallback.exception(null, response.throwable()) :
-                OAuthCallback.response(response);
+        return response.exception()
+                ? OAuthCallback.exception(null, response.throwable())
+                : OAuthCallback.response(response);
     }
 
     @Override
@@ -186,6 +184,7 @@ public class GithubOAuth
                         Map.of(),
                         headers
                 );
+
         // serialize
         if (profiles.code() == 200 && (emails.code() == 200 || emails.code() == 404)) {
             // serialize email
@@ -208,8 +207,9 @@ public class GithubOAuth
             return OAuthCallback.response(token, identify, null, profiles);
         }
 
-        return (profiles.exception() || emails.exception())
-                ? profiles.exception() ? OAuthCallback.exception(token, profiles.throwable()) : OAuthCallback.exception(token, emails.throwable())
-                : profiles.code() == 200 ? OAuthCallback.response(profiles) : OAuthCallback.response(emails);
+        if (profiles.exception()) return OAuthCallback.exception(token, profiles.throwable());
+        if (emails.exception()) return OAuthCallback.exception(token, emails.throwable());
+
+        return OAuthCallback.response(profiles.code() == 200 ? profiles : emails);
     }
 }
