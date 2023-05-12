@@ -25,3 +25,5 @@ include 'flows-tumblr'
 include 'flows-twitch'
 include 'flows-twitter'
 include 'flows-wordpress'
+include 'flows-qq'
+
