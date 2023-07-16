@@ -102,14 +102,14 @@ apply plugin: "com.github.johnrengelman.shadow"
 
 task collect(type: Copy) {
     destinationDir = file('build/libs')
-    subprojects.each {p -> from p.file('build/libs') }
+    subprojects.each { p -> from p.file('build/libs') }
 }
 
 dependencies {
-    subprojects.each {p -> implementation create(p) }
+    subprojects.each { p -> implementation create(p) }
     subprojects.stream()
             .filter(p -> p.name != "flows-common")
-            .each {p ->
+            .each { p ->
                 {
                     p.dependencies {
                         // common

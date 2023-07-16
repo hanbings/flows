@@ -16,13 +16,29 @@
 
 package io.hanbings.flows.qq;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import io.hanbings.flows.common.interfaces.Access;
+import io.hanbings.flows.common.interfaces.Refresh;
 
 public record QQAccess(
-        String accessToken
-) implements Access {
-    public record WrongCode(
-            String error
-    ) implements Access.Wrong {
+        @JsonProperty("access_token")
+        @SerializedName("access_token")
+        String accessToken,
+        @JsonProperty("expires_in")
+        @SerializedName("expires_in")
+        long expiresIn,
+        @JsonProperty("refresh_token")
+        @SerializedName("refresh_token")
+        String refreshToken
+) implements Access, Refresh {
+    public record Wrong(
+            @JsonProperty("msg")
+            @SerializedName("msg")
+            String error,
+            @JsonProperty("code")
+            @SerializedName("code")
+            int code
+    ) implements Access.Wrong, Refresh.Wrong {
     }
 }

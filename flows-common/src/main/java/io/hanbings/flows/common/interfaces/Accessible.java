@@ -39,7 +39,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
      * @return 字符串 url
      */
     default String authorize() {
-        return authorize(null, null);
+        return authorize(List.of(), Map.of());
     }
 
     /**
@@ -49,7 +49,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
      * @return 字符串 url
      */
     default String authorize(List<String> scopes) {
-        return authorize(scopes, null);
+        return authorize(scopes, Map.of());
     }
 
     /**
@@ -59,7 +59,7 @@ public interface Accessible<D extends Access, W extends Access.Wrong> {
      * @return 字符串 url
      */
     default String authorize(Map<String, String> params) {
-        return authorize(null, params);
+        return authorize(List.of(), params);
     }
 
     /**
