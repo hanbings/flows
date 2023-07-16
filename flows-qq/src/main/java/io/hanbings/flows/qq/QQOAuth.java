@@ -75,7 +75,7 @@ public class QQOAuth
             put("response_type", "code");
             put("client_id", client());
             put("redirect_uri", redirect());
-            put("state", "state");
+            put("state", state().get().add());
             put("scope", "get_user_info");
 
             putAll(par);

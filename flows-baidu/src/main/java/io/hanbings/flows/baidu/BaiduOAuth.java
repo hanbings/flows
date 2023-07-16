@@ -9,6 +9,7 @@ import io.hanbings.flows.common.interfaces.Refreshable;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class BaiduOAuth
         extends
         OAuth<BaiduAccess, BaiduAccess.Wrong>
