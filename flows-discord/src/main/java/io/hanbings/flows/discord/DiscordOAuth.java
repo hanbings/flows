@@ -43,6 +43,7 @@ public class DiscordOAuth
         Revokable<DiscordRevoke, DiscordRevoke.Wrong>,
         Profilable<DiscordProfile, DiscordProfile.Wrong>,
         Identifiable<DiscordIdentify, DiscordIdentify.Wrong> {
+    final String USER_INFO = "https://discord.com/api/users/@me";
     final String refreshment = "https://discord.com/api/oauth2/token";
     final String revocation = "https://discord.com/api/oauth2/token/revoke";
 
@@ -176,7 +177,7 @@ public class DiscordOAuth
                 .get(
                         this.serialization().get(),
                         this.proxy() == null ? null : this.proxy().get(),
-                        "https://discord.com/api/users/@me",
+                        USER_INFO,
                         Map.of(),
                         Map.of(
                                 "Authorization", String.format("Bearer %s", token)
@@ -214,7 +215,7 @@ public class DiscordOAuth
                 .get(
                         this.serialization().get(),
                         this.proxy() == null ? null : this.proxy().get(),
-                        "https://discord.com/api/users/@me",
+                        USER_INFO,
                         Map.of(),
                         Map.of(
                                 "Authorization", String.format("Bearer %s", token)
