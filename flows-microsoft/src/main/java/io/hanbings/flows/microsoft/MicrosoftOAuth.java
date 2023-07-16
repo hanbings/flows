@@ -64,7 +64,7 @@ public class MicrosoftOAuth
         return super.authorize(
                 scopes == null ? List.of("openid") : scopes,
                 new HashMap<>() {{
-                    putAll(params);
+                    if (params != null) putAll(params);
                     put("response_type", "code");
                 }}
         );

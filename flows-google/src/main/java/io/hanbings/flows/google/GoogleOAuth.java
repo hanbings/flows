@@ -63,7 +63,7 @@ public class GoogleOAuth extends OAuth<GoogleAccess, GoogleAccess.Wrong> {
         return super.authorize(
                 scopes == null ? List.of("openid") : scopes,
                 new HashMap<>() {{
-                    putAll(params);
+                    if (params != null) putAll(params);
                     put("response_type", "code");
                 }}
         );

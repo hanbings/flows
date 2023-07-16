@@ -229,7 +229,7 @@ public class DiscordOAuth
 
             DiscordIdentify identify = new DiscordIdentify(
                     profile.id(),
-                    String.format("https://cdn.discordapp.com/avatars/%s/user_avatar.png", profile.id()),
+                    String.format("https://cdn.discordapp.com/avatars/%s/%s.png", profile.id(), profile.avatar()),
                     profile.username(),
                     profile.discriminator(),
                     serialization().get().map(String.class, String.class, response.raw()).getOrDefault("email", null),

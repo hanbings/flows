@@ -30,8 +30,8 @@ public record DiscordIdentify(
         @JsonProperty("login")
         @SerializedName("login")
         String username,
-        @JsonProperty("name")
-        @SerializedName("name")
+        @JsonProperty("username")
+        @SerializedName("username")
         String nickname,
         @JsonProperty("email")
         @SerializedName("email")
