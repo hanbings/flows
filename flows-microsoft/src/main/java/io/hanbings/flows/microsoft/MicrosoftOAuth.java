@@ -129,7 +129,7 @@ public class MicrosoftOAuth
     public Callback<Identify, Identify.Wrong> identify(String token) {
         Response response = this.request()
                 .get()
-                .post(
+                .get(
                         this.serialization().get(),
                         this.proxy() == null ? null : this.proxy().get(),
                         USER_INFO,
@@ -165,7 +165,7 @@ public class MicrosoftOAuth
     public Callback<Profile, Profile.Wrong> profile(String token) {
         Response response = this.request()
                 .get()
-                .post(
+                .get(
                         this.serialization().get(),
                         this.proxy() == null ? null : this.proxy().get(),
                         USER_INFO,
