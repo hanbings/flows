@@ -49,4 +49,14 @@ public class MicrosoftConsumersOAuth extends MicrosoftOAuth {
                 params
         );
     }
+
+    @Override
+    public String refreshment() {
+        return "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
+    }
+
+    @Override
+    public String revocation() {
+        return "https://login.microsoftonline.com/consumers/oauth2/v2.0/logout";
+    }
 }

@@ -49,4 +49,16 @@ public class MicrosoftCommonOAuth extends MicrosoftOAuth {
                 params
         );
     }
+
+    @Override
+    @SuppressWarnings("all")
+    public String refreshment() {
+        return "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public String revocation() {
+        return "https://login.microsoftonline.com/common/oauth2/v2.0/logout";
+    }
 }

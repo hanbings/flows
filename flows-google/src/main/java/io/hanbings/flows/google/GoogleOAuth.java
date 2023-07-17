@@ -29,10 +29,10 @@ public class GoogleOAuth
         extends
         OAuth<GoogleAccess, GoogleAccess.Wrong>
         implements
-        Profilable<GoogleProfile, GoogleProfile.Wrong>,
-        Identifiable<GoogleIdentify, GoogleIdentify.Wrong>,
+        Refreshable<GoogleAccess, GoogleAccess.Wrong>,
         Revokable<GoogleRevoke, GoogleRevoke.Wrong>,
-        Refreshable<GoogleAccess, GoogleAccess.Wrong> {
+        Profilable<GoogleProfile, GoogleProfile.Wrong>,
+        Identifiable<GoogleIdentify, GoogleIdentify.Wrong> {
     final String USER_INFO = "https://openidconnect.googleapis.com/v1/userinfo";
     final String refreshment = "https://oauth2.googleapis.com/token";
     final String revocation = "https://oauth2.googleapis.com/revoke";

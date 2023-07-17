@@ -18,9 +18,7 @@ package io.hanbings.flows.microsoft;
 
 import io.hanbings.flows.common.OAuth;
 import io.hanbings.flows.common.OAuthCallback;
-import io.hanbings.flows.common.interfaces.Callback;
-import io.hanbings.flows.common.interfaces.Refreshable;
-import io.hanbings.flows.common.interfaces.Response;
+import io.hanbings.flows.common.interfaces.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +29,12 @@ public class MicrosoftOAuth
         extends
         OAuth<MicrosoftAccess, MicrosoftAccess.Wrong>
         implements
-        Refreshable<MicrosoftAccess, MicrosoftAccess.Wrong> {
+        Refreshable<MicrosoftAccess, MicrosoftAccess.Wrong>,
+        Revokable<Revoke, Revoke.Wrong>,
+        Profilable<Profile, Profile.Wrong>,
+        Identifiable<Identify, Identify.Wrong> {
+    final String USER_INFO = "https://graph.microsoft.com/v1.0/me";
+
     private MicrosoftOAuth() {
         super(null, null, null, null);
     }
@@ -57,6 +60,14 @@ public class MicrosoftOAuth
         this.client(client);
         this.secret(secret);
         this.redirect(redirect);
+    }
+
+    public String refreshment() {
+        return "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+    }
+
+    public String revocation() {
+        return "https://login.microsoftonline.com/common/oauth2/v2.0/logout";
     }
 
     @Override
@@ -115,13 +126,121 @@ public class MicrosoftOAuth
     }
 
     @Override
+    public Callback<Identify, Identify.Wrong> identify(String token) {
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        USER_INFO,
+                        Map.of(),
+                        Map.of(
+                                "Authorization", "Bearer " + token
+                        )
+                );
+
+        if (response.code() == 200) {
+            MicrosoftIdentify identify = this.serialization()
+                    .get()
+                    .object(MicrosoftIdentify.class, response.raw());
+
+            return OAuthCallback.response(token, identify, null, response);
+        }
+
+        if (response.code() != 200 && response.code() != 0) {
+            MicrosoftIdentify.Wrong wrong = this.serialization()
+                    .get()
+                    .object(MicrosoftIdentify.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong, response);
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
+    }
+
+    @Override
+    public Callback<Profile, Profile.Wrong> profile(String token) {
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        USER_INFO,
+                        Map.of(),
+                        Map.of(
+                                "Authorization", "Bearer " + token
+                        )
+                );
+
+        if (response.code() == 200) {
+            MicrosoftProfile profile = this.serialization()
+                    .get()
+                    .object(MicrosoftProfile.class, response.raw());
+
+            return OAuthCallback.response(token, profile, null, response);
+        }
+
+        if (response.code() != 200 && response.code() != 0) {
+            MicrosoftProfile.Wrong wrong = this.serialization()
+                    .get()
+                    .object(MicrosoftProfile.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong, response);
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
+    }
+
+    @Override
+    public Callback<Revoke, Revoke.Wrong> revoke(String token) {
+        Response response = this.request()
+                .get()
+                .post(
+                        this.serialization().get(),
+                        this.proxy() == null ? null : this.proxy().get(),
+                        revocation(),
+                        Map.of(),
+                        Map.of(
+                                "Authorization", "Bearer " + token
+                        )
+                );
+
+        if (response.code() == 200) {
+            MicrosoftRevoke revoke = this.serialization()
+                    .get()
+                    .object(MicrosoftRevoke.class, response.raw());
+
+            return OAuthCallback.response(token, revoke, null, response);
+        }
+
+        if (response.code() != 200 && response.code() != 0) {
+            MicrosoftRevoke.Wrong wrong = this.serialization()
+                    .get()
+                    .object(MicrosoftRevoke.Wrong.class, response.raw());
+
+            return OAuthCallback.response(null, null, wrong, response);
+        }
+
+        return OAuthCallback.exception(
+                null,
+                response.exception() ? response.throwable() : new IllegalArgumentException()
+        );
+    }
+
+    @Override
     public Callback<MicrosoftAccess, MicrosoftAccess.Wrong> refresh(String token) {
         Response response = this.request()
                 .get()
                 .post(
                         this.serialization().get(),
                         this.proxy() == null ? null : this.proxy().get(),
-                        this.access(),
+                        refreshment(),
                         Map.of(
                                 "client_id", this.client(),
                                 "client_secret", this.secret(),
