@@ -62,7 +62,7 @@ public class MicrosoftOAuth
     @Override
     public String authorize(List<String> scopes, Map<String, String> params) {
         return super.authorize(
-                scopes == null ? List.of("openid") : scopes,
+                scopes == null ? this.scopes() : scopes,
                 new HashMap<>() {{
                     if (params != null) putAll(params);
                     put("response_type", "code");
