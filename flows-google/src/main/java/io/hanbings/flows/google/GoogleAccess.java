@@ -19,6 +19,7 @@ package io.hanbings.flows.google;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import io.hanbings.flows.common.interfaces.Access;
+import io.hanbings.flows.common.interfaces.Refresh;
 
 public record GoogleAccess(
         @JsonProperty("access_token")
@@ -36,7 +37,7 @@ public record GoogleAccess(
         @JsonProperty("token_type")
         @SerializedName("token_type")
         String tokenType
-) implements Access {
+) implements Access, Refresh {
     public record Wrong(
             @JsonProperty("error")
             @SerializedName("error")
@@ -44,6 +45,6 @@ public record GoogleAccess(
             @JsonProperty("error_description")
             @SerializedName("error_description")
             String errorDescription
-    ) implements Access.Wrong {
+    ) implements Access.Wrong, Refresh.Wrong {
     }
 }
